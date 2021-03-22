@@ -1,3 +1,5 @@
-bin_PROGRAMS = vgmreader
-vgmreader_SOURCES = src/main.c
+AUTOMAKE_OPTIONS = foreign
+EXTRA_DIST = README
+SUBDIRS = src
+
 
