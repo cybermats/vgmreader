@@ -1,5 +1,3 @@
-AUTOMAKE_OPTIONS = foreign
-EXTRA_DIST = README
-SUBDIRS = src
+SUBDIRS = src . tests
 
 
