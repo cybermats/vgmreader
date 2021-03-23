@@ -3,7 +3,7 @@ AC_INIT([vgmreader], [0.1], [cybermats@gmail.com])
 AM_PROG_AR
 
 AC_CONFIG_SRCDIR([src/main.c])
-AM_INIT_AUTOMAKE([-Wall -Werror subdir-objects foreign])
+AM_INIT_AUTOMAKE([-Wall -Werror subdir-objects])
 
 AC_PROG_CC
 AC_PROG_LIBTOOL
