@@ -1,6 +1,6 @@
-AM_CPPFLAGS = -I${top_srcdir}/common
+AM_CPPFLAGS = -I${top_srcdir}/src
 
-lib_LIBRARIES = libvgmreader.la
+lib_LTLIBRARIES = libvgmreader.la
 libvgmreader_la_SOURCES = vgm.c
 
 bin_PROGRAMS = vgmreader

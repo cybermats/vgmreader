@@ -8,7 +8,7 @@ AM_INIT_AUTOMAKE([-Wall -Werror subdir-objects foreign])
 AC_PROG_CC
 AC_PROG_LIBTOOL
 
-PKG_CHECK_MODULES([CHECK], [check >= 0.9.5])
+PKG_CHECK_MODULES([CHECK], [check >= 0.9.6])
 AM_PROG_CC_C_O
 
 AC_HEADER_STDC
