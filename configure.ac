@@ -5,6 +5,8 @@ AM_PROG_AR
 AC_CONFIG_SRCDIR([src/main.c])
 AM_INIT_AUTOMAKE([-Wall -Werror foreign 1.11.2])
 
+AC_CONFIG_MACRO_DIRS([m4])
+
 AC_PROG_CC
 AC_PROG_LIBTOOL
 

@@ -1,4 +1,5 @@
 AM_CPPFLAGS = -I${top_srcdir}/src
+ACLOCAL_AMFLAGS = -I m4
 
 HFILES =\
 	vgm.h
