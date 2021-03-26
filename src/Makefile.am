@@ -2,10 +2,14 @@ AM_CPPFLAGS = -I${top_srcdir}/src
 ACLOCAL_AMFLAGS = -I m4
 
 HFILES =\
-	vgm.h
+	vgm.h \
+	args.h \
+	decode.h
 
 CFILES =\
-	vgm.c
+	vgm.c \
+	args.c \
+	decode.c
 
 
 lib_LTLIBRARIES = libvgmreader.la

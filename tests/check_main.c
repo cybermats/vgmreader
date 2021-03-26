@@ -10,6 +10,7 @@ int main(void)
 
   sr = srunner_create(make_header_suite());
   srunner_add_suite(sr, make_core_suite());
+  srunner_add_suite(sr, make_decode_file_suite());
 
   srunner_set_tap(sr, "testing.tap");
   

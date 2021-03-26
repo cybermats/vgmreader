@@ -14,11 +14,12 @@ PKG_CHECK_MODULES([CHECK], [check >= 0.9.6])
 AM_PROG_CC_C_O
 
 AC_HEADER_STDC
-AC_CHECK_HEADERS([stdlib.h zlib.h check.h])
+AC_CHECK_HEADERS([stdlib.h zlib.h check.h argp.h])
 
 AC_FUNC_MALLOC
 
 AC_SEARCH_LIBS(deflate, z)
+AC_SEARCH_LIBS(argp_parse,argp)
 
 AC_CONFIG_FILES([Makefile
 		 src/Makefile

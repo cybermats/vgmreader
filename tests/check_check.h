@@ -5,5 +5,6 @@
 
 Suite *make_core_suite(void);
 Suite *make_header_suite(void);
+Suite *make_decode_file_suite(void);
 
 #endif

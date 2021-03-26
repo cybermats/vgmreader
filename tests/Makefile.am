@@ -7,7 +7,8 @@ HFILES =\
 CFILES =\
 	check_main.c \
 	check_core.c \
-	check_header.c
+	check_header.c \
+	check_decode_file.c
 
 CLEANFILES = *~ *.tap
 
