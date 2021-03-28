@@ -9,7 +9,7 @@ static char vgm[] = "Vgm ";
 
 #define CHUNK 16384
 
-int file_type(const char *buffer, size_t size)
+int file_type(const unsigned char *buffer, size_t size)
 {
   if (!buffer || !size)
     return VGM_FT_UNKNOWN;
@@ -30,7 +30,8 @@ int file_type(const char *buffer, size_t size)
   return VGM_FT_UNKNOWN;
 }
 
-size_t decompress(char **output, const char *buffer, size_t size)
+size_t decompress(unsigned char **output, const
+		  unsigned char *buffer, size_t size)
 {
   printf("decompress 1\n");
   if (!size)
@@ -49,7 +50,7 @@ size_t decompress(char **output, const char *buffer, size_t size)
   strm.opaque = Z_NULL;
   strm.avail_in = 0;
   strm.next_in = Z_NULL;
-  ret = inflateInit(&strm);
+  ret = inflateInit2(&strm, (15 + 32));
   if (ret != Z_OK) {
     printf("decompress fail 1\n");
     free(*output);
@@ -69,12 +70,13 @@ size_t decompress(char **output, const char *buffer, size_t size)
       assert(ret != Z_STREAM_ERROR); /* state not clobbered */
       switch (ret) {
       case Z_NEED_DICT:
-	ret = Z_DATA_ERROR; /* and fall through */
+	//	ret = Z_DATA_ERROR; /* and fall through */
       case Z_DATA_ERROR:
+	printf("Msg: %s\n", strm.msg);
       case Z_MEM_ERROR:
 	(void)inflateEnd(&strm);
 	free(*output);
-	printf("decompress fail 2\n");
+	printf("decompress fail 2 - %d\n", ret);
 	return 0;
       }
       have = CHUNK - strm.avail_out;

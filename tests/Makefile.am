@@ -1,19 +1,27 @@
-AM_CPPFLAGS = -I${top_srcdir}/src
+# use the TAP log driver
+TEST_LOG_DRIVER = env AM_TAP_AWK='$(AWK)' $(SHELL) \
+            $(top_srcdir)/build-aux/tap-driver.sh
+
+ # Setup Criterion TAP output using ENV
+ AM_TESTS_ENVIRONMENT = \
+    CRITERION_OUTPUTS='tap:-'; \
+    export CRITERION_OUTPUTS;
+
+AM_CPPFLAGS = -I${top_srcdir}/src $(CRITERION_CFLAGS)
 ACLOCAL_AMFLAGS = -I m4
 
-HFILES =\
-	check_check.h
+HFILES =
 
-CFILES =\
-	check_main.c \
-	check_core.c \
-	check_header.c \
-	check_decode_file.c
+CFILES = \
+	main.c \
+	test_core.c \
+	test_header.c \
+	test_decoder.c
 
-CLEANFILES = *~ *.tap
+check_PROGRAMS = criterion_tests
+criterion_tests_SOURCES = $(CFILES) $(C_SRCFILES) $(H_SRCFILES)
+criterion_tests_CFLAGS =  $(CRITERION_CFLAGS)
+criterion_tests_LDFLAGS =  $(CRITERION_LIBS) -static
+criterion_tests_LDADD = $(top_builddir)/src/libvgmreader.la
 
-TESTS = check_vgmreader
-check_PROGRAMS = check_vgmreader
-check_vgmreader_SOURCES = $(CFILES) $(HFILES)
-check_vgmreader_CFLAGS = @CHECK_CFLAGS@
-check_vgmreader_LDADD = $(top_builddir)/src/libvgmreader.la @CHECK_LIBS@
+TESTS = criterion_tests
