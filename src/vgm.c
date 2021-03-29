@@ -1,4 +1,5 @@
 #include "vgm.h"
+#include "vgm_helper.h"
 #include <assert.h>
 #include <stdio.h>
 #include <string.h>
@@ -11,6 +12,9 @@ vgm_create (const unsigned char *buffer, int offset, size_t size)
     return NULL;
   Vgm *vgm;
   vgm = malloc (sizeof (Vgm));
+  vgm->buffer = buffer;
+  vgm->size = size;
+  
   vgm->eof_offset = parse_uint (buffer, offset + 4, size);
   vgm->version = parse_bcd (buffer, offset + 8, size);
   if (vgm->version < 100)
@@ -249,6 +253,26 @@ vgm_get_tags (const Vgm *vgm, char *dst, size_t size)
   return 0;
 }
 
+unsigned int
+vgm_get_attr (const Vgm *vgm, int attribute)
+{
+  switch (attribute)
+    {
+    case VGM_SN76489_FEEDBACK:
+      return parse_ushort (vgm->buffer, attribute, vgm->size);
+    case VGM_SN76489_SHIFT_REG_WIDTH:
+    case VGM_AY8910_CHIP_TYPE:
+    case VGM_AY8910_FLAGS:
+    case VGM_YM2203_FLAGS:
+    case VGM_YM2608_FLAGS:
+      return parse_uchar (vgm->buffer, attribute, vgm->size);
+    case VGM_VERSION:
+      return parse_bcd (vgm->buffer, attribute, vgm->size);
+    default:
+      return parse_uint (vgm->buffer, attribute, vgm->size);
+    }
+}
+
 int
 vgm_validate_buffer (const unsigned char *buffer, size_t size)
 {
@@ -259,59 +283,3 @@ vgm_validate_buffer (const unsigned char *buffer, size_t size)
   return 0;
 }
 
-unsigned int
-parse_uint (const unsigned char *buffer, int offset, size_t size)
-{
-  assert (buffer);
-  assert (size >= 4);
-  union
-  {
-    char c[4];
-    unsigned int v;
-  } im;
-  im.c[0] = buffer[offset];
-  im.c[1] = buffer[offset + 1];
-  im.c[2] = buffer[offset + 2];
-  im.c[3] = buffer[offset + 3];
-  return im.v;
-}
-
-unsigned int
-parse_ushort (const unsigned char *buffer, int offset, size_t size)
-{
-  assert (buffer);
-  assert (size >= 2);
-  union
-  {
-    char c[2];
-    unsigned short v;
-  } im;
-  im.c[0] = buffer[offset];
-  im.c[1] = buffer[offset + 1];
-  return im.v;
-}
-
-unsigned int
-parse_uchar (const unsigned char *buffer, int offset, size_t size)
-{
-  assert (buffer);
-  assert (size >= 1);
-  return (unsigned char)buffer[offset];
-}
-
-unsigned int
-parse_bcd (const unsigned char *buffer, int offset, size_t size)
-{
-  assert (buffer);
-  assert ((size - offset) >= 4);
-  unsigned int value = 0;
-  for (int i = offset + 3; i >= offset; --i)
-    {
-      unsigned char c = buffer[i];
-      value *= 10;
-      value += c >> 4;
-      value *= 10;
-      value += c % 16;
-    }
-  return value;
-}

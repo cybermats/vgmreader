@@ -4,12 +4,14 @@ ACLOCAL_AMFLAGS = -I m4
 HFILES =\
 	vgm.h \
 	args.h \
-	decode.h
+	decode.h \
+	vgm_helper.h
 
 CFILES =\
 	vgm.c \
 	args.c \
-	decode.c
+	decode.c \
+	vgm_helper.c
 
 
 lib_LTLIBRARIES = libvgmreader.la

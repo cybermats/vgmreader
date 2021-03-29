@@ -2,6 +2,7 @@
 #include <signal.h>
 
 #include "vgm.h"
+#include "vgm_helper.h"
 
 Test (core, test_check_header_null)
 {
