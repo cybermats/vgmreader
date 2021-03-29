@@ -1,6 +1,8 @@
 #ifndef VGM_H
 #define VGM_H
 
+#include <stdlib.h>
+
 typedef struct
 {
   unsigned int eof_offset;
@@ -38,24 +40,21 @@ typedef struct
   unsigned int ym2203_flags;
   unsigned int ym2608_flags;
   unsigned int loop_modifier;
-  
 
   unsigned int data_offset;
 } Vgm;
 
-Vgm *vgm_create(const unsigned char *buffer, int offset, size_t size);
-void vgm_free(Vgm *vgm);
-size_t vgm_get_tags(const Vgm *vgm, char *dst, size_t size);
+Vgm *vgm_create (const unsigned char *buffer, int offset, size_t size);
+void vgm_free (Vgm *vgm);
+size_t vgm_get_tags (const Vgm *vgm, char *dst, size_t size);
 
-int vgm_validate_buffer(const unsigned char *buffer, size_t size);
+int vgm_validate_buffer (const unsigned char *buffer, size_t size);
 
-unsigned int parse_uint(const unsigned char *buffer,
-			int offset, size_t size);
-unsigned int parse_ushort(const unsigned char *buffer,
-			int offset, size_t size);
-unsigned int parse_uchar(const unsigned char *buffer,
-			int offset, size_t size);
-unsigned int parse_bcd(const unsigned char *buffer,
-		       int offset, size_t size);
+unsigned int parse_uint (const unsigned char *buffer, int offset, size_t size);
+unsigned int parse_ushort (const unsigned char *buffer, int offset,
+                           size_t size);
+unsigned int parse_uchar (const unsigned char *buffer, int offset,
+                          size_t size);
+unsigned int parse_bcd (const unsigned char *buffer, int offset, size_t size);
 
 #endif
