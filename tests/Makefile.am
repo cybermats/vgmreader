@@ -25,3 +25,9 @@ criterion_tests_LDFLAGS =  $(CRITERION_LIBS) -static
 criterion_tests_LDADD = $(top_builddir)/src/libvgmreader.la
 
 TESTS = criterion_tests
+
+
+.PHONY: format
+format:
+	clang-format -i $(CFILES) $(HFILES)
+

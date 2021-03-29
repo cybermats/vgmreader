@@ -19,3 +19,8 @@ bin_PROGRAMS = vgmreader
 vgmreader_SOURCES = main.c
 vgmreader_LDFLAGS = -static
 vgmreader_LDADD = libvgmreader.la
+
+
+.PHONY: format
+format:
+	clang-format -i $(CFILES) $(HFILES)
