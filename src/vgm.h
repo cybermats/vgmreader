@@ -43,19 +43,19 @@ typedef struct
   unsigned int data_offset;
 } Vgm;
 
-Vgm *vgm_create(const char *buffer, unsigned int offset, unsigned int size);
+Vgm *vgm_create(const unsigned char *buffer, int offset, size_t size);
 void vgm_free(Vgm *vgm);
+size_t vgm_get_tags(const Vgm *vgm, char *dst, size_t size);
 
-int vgm_validate_buffer(const char *buffer, unsigned int size);
+int vgm_validate_buffer(const unsigned char *buffer, size_t size);
 
-unsigned int parse_uint(const char *buffer,
-			unsigned int offset, unsigned int size);
-unsigned int parse_ushort(const char *buffer,
-			unsigned int offset, unsigned int size);
-unsigned int parse_uchar(const char *buffer,
-			unsigned int offset, unsigned int size);
-
-unsigned int parse_bcd(const char *buffer,
-		       unsigned int offset, unsigned int size);
+unsigned int parse_uint(const unsigned char *buffer,
+			int offset, size_t size);
+unsigned int parse_ushort(const unsigned char *buffer,
+			int offset, size_t size);
+unsigned int parse_uchar(const unsigned char *buffer,
+			int offset, size_t size);
+unsigned int parse_bcd(const unsigned char *buffer,
+		       int offset, size_t size);
 
 #endif

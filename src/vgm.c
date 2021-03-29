@@ -1,10 +1,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
+#include <stdio.h>
 #include "vgm.h"
 
 
-Vgm *vgm_create(const char *buffer, unsigned int offset, unsigned int size)
+Vgm *vgm_create(const unsigned char *buffer, int offset, size_t size)
 {
   const unsigned int header_size = size - offset;
   if (header_size < 256)
@@ -104,19 +105,112 @@ void vgm_free(Vgm *vgm)
   return;
 }
 
-int vgm_validate_buffer(const char *buffer, unsigned int size)
+size_t vgm_get_tags(const Vgm *vgm, char *dst, size_t size)
+{
+  int count = 0;
+  if (vgm->sn76489_clock) {
+    if (count++) strncat(dst, ", ", size);
+    strncat(dst, "sn76489", size);
+  }
+  if (vgm->ym2413_clock) {
+    if (count++) strncat(dst, ", ", size);
+    strncat(dst, "ym2413", size);
+  }
+  if (vgm->ym2612_clock) {
+    if (count++) strncat(dst, ", ", size);
+    strncat(dst, "ym2612", size);
+  }
+  if (vgm->ym2151_clock) {
+    if (count++) strncat(dst, ", ", size);
+    strncat(dst, "ym2151", size);
+  }
+  if (vgm->sega_pcm_clock) {
+    if (count++) strncat(dst, ", ", size);
+    strncat(dst, "segaPCM", size);
+  }
+  if (vgm->rf5c68_clock) {
+    if (count++) strncat(dst, ", ", size);
+    strncat(dst, "rf5c68", size);
+  }
+  if (vgm->ym2203_clock) {
+    if (count++) strncat(dst, ", ", size);
+    strncat(dst, "ym2203", size);
+  }
+  if (vgm->ym2608_clock) {
+    if (count++) strncat(dst, ", ", size);
+    strncat(dst, "ym2608", size);
+  }
+  if (vgm->ym2610_clock) {
+    if (count++) strncat(dst, ", ", size);
+    strncat(dst, "ym2610", size);
+  }
+  if (vgm->ym3812_clock) {
+    if (count++) strncat(dst, ", ", size);
+    strncat(dst, "ym3812", size);
+  }
+  if (vgm->ym3526_clock) {
+    if (count++) strncat(dst, ", ", size);
+    strncat(dst, "ym3526", size);
+  }
+  if (vgm->y8950_clock) {
+    if (count++) strncat(dst, ", ", size);
+    strncat(dst, "y8950", size);
+  }
+  if (vgm->ymf262_clock) {
+    if (count++) strncat(dst, ", ", size);
+    strncat(dst, "ymf262", size);
+  }
+  if (vgm->ymf278b_clock) {
+    if (count++) strncat(dst, ", ", size);
+    strncat(dst, "ymf278b", size);
+  }
+  if (vgm->ymf271_clock) {
+    if (count++) strncat(dst, ", ", size);
+    strncat(dst, "ymf271", size);
+  }
+  if (vgm->ymz280b_clock) {
+    if (count++) strncat(dst, ", ", size);
+    strncat(dst, "ymz280b", size);
+  }
+  if (vgm->rf5c164_clock) {
+    if (count++) strncat(dst, ", ", size);
+    strncat(dst, "rf5c164", size);
+  }
+  if (vgm->pwm_clock) {
+    if (count++) strncat(dst, ", ", size);
+    strncat(dst, "pwm", size);
+  }
+  if (vgm->ay8910_clock) {
+    if (count++) strncat(dst, ", ", size);
+    strncat(dst, "ay8910", size);
+  }
+  if (vgm->ym2203_clock) {
+    if (count++) strncat(dst, ", ", size);
+    strncat(dst, "ym2203", size);
+  }
+  if (vgm->ym2608_clock) {
+    if (count++) strncat(dst, ", ", size);
+    strncat(dst, "ym2608", size);
+  }
+  return 0;
+
+}
+
+
+int vgm_validate_buffer(const unsigned char *buffer, size_t size)
 {
   if (size < 4)
     return 0;
-  if (strncmp(buffer, "Vgm ", 4) == 0)
+  if (strncmp((const char*)buffer, "Vgm ", 4) == 0)
     return 1;
   return 0;
 }
 
 
-unsigned int parse_uint(const char *buffer, unsigned int offset, unsigned int size)
+unsigned int parse_uint(const unsigned char *buffer, int offset, size_t size)
 {
   assert(buffer);
+  assert(size >= 4);
   union {
     char c[4];
     unsigned int v;
@@ -128,9 +222,10 @@ unsigned int parse_uint(const char *buffer, unsigned int offset, unsigned int si
   return im.v;
 }
 
-unsigned int parse_ushort(const char *buffer, unsigned int offset, unsigned int size)
+unsigned int parse_ushort(const unsigned char *buffer, int offset, size_t size)
 {
   assert(buffer);
+  assert(size >= 2);
   union {
     char c[2];
     unsigned short v;
@@ -140,21 +235,25 @@ unsigned int parse_ushort(const char *buffer, unsigned int offset, unsigned int 
   return im.v;
 }
 
-unsigned int parse_uchar(const char *buffer, unsigned int offset, unsigned int size)
+unsigned int parse_uchar(const unsigned char *buffer, int offset, size_t size)
 {
   assert(buffer);
+  assert(size >= 1);
   return (unsigned char)buffer[offset];
 }
 
-unsigned int parse_bcd(const char *buffer, unsigned int offset, unsigned int size)
+unsigned int parse_bcd(const unsigned char *buffer, int offset, size_t size)
 {
   assert(buffer);
+  assert((size - offset) >= 4);
   unsigned int value = 0;
-  for (int i = offset; i < size && i < offset + 4; ++i) {
+  for (int i = offset + 3; i >= offset; --i) {
+    unsigned char c = buffer[i];
     value *= 10;
-    value += buffer[i] >> 4;
+    value += c >> 4;
     value *= 10;
-    value += buffer[i] % 16;
+    value += c % 16;
   }
   return value;
 }
+

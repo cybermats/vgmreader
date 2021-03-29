@@ -2,7 +2,7 @@
 
 #include "vgm.h"
 
-static char master_buffer[] =
+static unsigned char master_buffer[] =
   {
     0x56, 0x67, 0x6d, 0x20,  0x01, 0x00, 0x00, 0x00, // 0x00
     0x00, 0x00, 0x00, 0x00,  0x02, 0x00, 0x00, 0x00, // 0x08
@@ -42,7 +42,7 @@ static char master_buffer[] =
   };
 
 
-void copy_version(char *dst, const char *src, const char version[])
+void copy_version(unsigned char *dst, const unsigned char *src, const unsigned char version[])
 {
   memcpy(dst, src, 0x100);
   memcpy(&dst[0x08], version, 4);
@@ -58,7 +58,7 @@ Test(header, test_create_vgm_null)
 
 Test(header, test_create_vgm_too_small)
 {
-  char buffer[] = {0x56, 0x67, 0x6d, 0x20};
+  char unsigned buffer[] = {0x56, 0x67, 0x6d, 0x20};
   Vgm *vgm = vgm_create(buffer, 0, 4);
   cr_assert_null(vgm);
   vgm_free(vgm);
@@ -67,8 +67,8 @@ Test(header, test_create_vgm_too_small)
 
 Test(header, test_create_vgm_success)
 {
-  char buffer[0x100];
-  char version[] = {0x12, 0x34, 0x56, 0x78 };
+  unsigned char buffer[0x100];
+  unsigned char version[] = {0x78, 0x56, 0x34, 0x12 };
   copy_version(buffer, master_buffer, version);
 
   Vgm *vgm;
@@ -82,8 +82,8 @@ Test(header, test_create_vgm_success)
 
 Test(header, test_create_vgm_v100)
 {
-  char buffer[0x100];
-  char version[] = {0x00, 0x00, 0x01, 0x00 };
+  unsigned char buffer[0x100];
+  unsigned char version[] = {0x00, 0x01, 0x00, 0x00 };
   copy_version(buffer, master_buffer, version);
 
   Vgm *vgm;
@@ -105,8 +105,8 @@ Test(header, test_create_vgm_v100)
   
 Test(header, test_create_vgm_v101)
 {
-  char buffer[0x100];
-  char version[] = {0x00, 0x00, 0x01, 0x01 };
+  unsigned char buffer[0x100];
+  unsigned char version[] = {0x01, 0x01, 0x00, 0x00 };
   copy_version(buffer, master_buffer, version);
 
   Vgm *vgm;
@@ -134,8 +134,8 @@ Test(header, test_create_vgm_v101)
   
 Test(header, test_create_vgm_v110)
 {
-  char buffer[0x100];
-  char version[] = {0x00, 0x00, 0x01, 0x10 };
+  unsigned char buffer[0x100];
+  unsigned char version[] = {0x10, 0x01, 0x00, 0x00 };
   copy_version(buffer, master_buffer, version);
 
   Vgm *vgm;
@@ -163,8 +163,8 @@ Test(header, test_create_vgm_v110)
 
 Test(header, test_create_vgm_v150)
 {
-  char buffer[0x100];
-  char version[] = {0x00, 0x00, 0x01, 0x50 };
+  unsigned char buffer[0x100];
+  unsigned char version[] = {0x50, 0x01, 0x00, 0x00 };
   copy_version(buffer, master_buffer, version);
 
   Vgm *vgm;
@@ -217,8 +217,8 @@ Test(header, test_create_vgm_v150)
 
 Test(header, test_create_vgm_v151)
 {
-  char buffer[0x100];
-  char version[] = {0x00, 0x00, 0x01, 0x51 };
+  unsigned char buffer[0x100];
+  unsigned char version[] = {0x51, 0x01, 0x00, 0x00 };
   copy_version(buffer, master_buffer, version);
 
   Vgm *vgm;

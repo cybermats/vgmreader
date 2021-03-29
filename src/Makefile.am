@@ -1,4 +1,4 @@
-AM_CPPFLAGS = -I${top_srcdir}/src
+#AM_CPPFLAGS = -I${top_srcdir}/src
 ACLOCAL_AMFLAGS = -I m4
 
 HFILES =\
@@ -17,4 +17,5 @@ libvgmreader_la_SOURCES = $(CFILES) $(HFILES)
 
 bin_PROGRAMS = vgmreader
 vgmreader_SOURCES = main.c
+vgmreader_LDFLAGS = -static
 vgmreader_LDADD = libvgmreader.la

@@ -14,10 +14,10 @@ static char doc[] =
 static char args_doc[] = "file";
 
 static struct argp_option options[] = {
-  {"verbose", 'v', 0, 0, "Produce verbose output" },
-  {"quiet", 'q', 0, 0, "Don't produce any output" },
-  {"silent", 's', 0, OPTION_ALIAS },
-  {"header", 'h', 0, 0, "Print headers" },
+  {"verbose", 'v', 0, 0, "Produce verbose output", 0 },
+  {"quiet", 'q', 0, 0, "Don't produce any output", 0 },
+  {"silent", 's', 0, OPTION_ALIAS, 0, 0 },
+  {"header", 'h', 0, 0, "Print headers", 0 },
   { 0 }
 };
 
@@ -54,9 +54,9 @@ parse_opt (int key, char *arg, struct argp_state *state)
   return 0;
 }
 
-static struct argp argp = { options, parse_opt, args_doc, doc };
+static struct argp argp = { options, parse_opt, args_doc, doc, 0, 0, 0 };
 
 int parse_args(int argc, char *argv[], struct arguments_t *arguments)
 {
-  argp_parse(&argp, argc, argv, 0, 0, arguments);
+  return argp_parse(&argp, argc, argv, 0, 0, arguments);
 }
