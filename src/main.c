@@ -35,7 +35,7 @@ main (int argc, char *argv[])
       return -1;
     }
 
-  printf ("Version: %d, ", vgm->version);
+  printf ("Version: %d, ", vgm_get_attr(vgm, VGM_VERSION));
 
   char tags[1024];
   tags[0] = 0;

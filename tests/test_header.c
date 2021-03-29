@@ -262,7 +262,5 @@ Test (header, test_create_vgm_v151)
   cr_assert_eq (vgm_get_attr(vgm, VGM_YM2608_FLAGS), 0xf5);
   cr_assert_eq (vgm_get_attr(vgm, VGM_LOOP_MODIFIER), 0xf8);
 
-  cr_assert_eq (vgm->data_offset, 0x0c);
-
   vgm_free (vgm);
 }
