@@ -162,3 +162,5 @@ dkms.conf
 ## Misc
 *.log
 *.tap
+build_aux
+vgmreader-*.tar.gz
