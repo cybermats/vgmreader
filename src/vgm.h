@@ -55,6 +55,10 @@
 // Version 1.60
 
 
+// Version 1.51
+#define VGM_LOOP_MODIFIER 0x7f // 8 bits
+
+
 typedef struct
 {
   const unsigned char *buffer;

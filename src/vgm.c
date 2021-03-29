@@ -14,7 +14,7 @@ vgm_create (const unsigned char *buffer, int offset, size_t size)
   vgm = malloc (sizeof (Vgm));
   vgm->buffer = buffer;
   vgm->size = size;
-  
+
   vgm->eof_offset = parse_uint (buffer, offset + 4, size);
   vgm->version = parse_bcd (buffer, offset + 8, size);
   if (vgm->version < 100)
@@ -256,6 +256,47 @@ vgm_get_tags (const Vgm *vgm, char *dst, size_t size)
 unsigned int
 vgm_get_attr (const Vgm *vgm, int attribute)
 {
+  unsigned int version = parse_bcd (vgm->buffer, VGM_VERSION, vgm->size);
+  if (attribute == VGM_VERSION)
+    {
+      return version;
+    }
+
+  if (version < 101)
+    {
+      if (attribute == VGM_RATE)
+        return 0;
+    }
+  if (version < 110)
+    {
+      if (attribute == VGM_SN76489_FEEDBACK)
+        return 0x09;
+      if (attribute == VGM_SN76489_SHIFT_REG_WIDTH)
+        return 0x10;
+      if (attribute == VGM_YM2612 || attribute == VGM_YM2151)
+        attribute = VGM_YM2413;
+    }
+  if (version < 150)
+    {
+      if (attribute == VGM_DATA_OFFSET)
+        return 0x40;
+    }
+  if (version < 151)
+    {
+      if (attribute == VGM_SN76489_FLAGS || attribute == VGM_SEGA_PCM
+          || attribute == VGM_SEGA_PCM_INTERFACE_REG || attribute == VGM_RF5C68
+          || attribute == VGM_YM2203 || attribute == VGM_YM2608
+          || attribute == VGM_YM2610 || attribute == VGM_YM3812
+          || attribute == VGM_YM3526 || attribute == VGM_Y8950
+          || attribute == VGM_YMF262 || attribute == VGM_YMF278B
+          || attribute == VGM_YMF271 || attribute == VGM_YMZ280B
+          || attribute == VGM_RF5C164 || attribute == VGM_PWM
+          || attribute == VGM_AY8910 || attribute == VGM_AY8910_CHIP_TYPE
+          || attribute == VGM_AY8910_FLAGS || attribute == VGM_YM2203_FLAGS
+          || attribute == VGM_YM2608_FLAGS || attribute == VGM_LOOP_MODIFIER)
+        return 0x0;
+    }
+
   switch (attribute)
     {
     case VGM_SN76489_FEEDBACK:
@@ -265,6 +306,8 @@ vgm_get_attr (const Vgm *vgm, int attribute)
     case VGM_AY8910_FLAGS:
     case VGM_YM2203_FLAGS:
     case VGM_YM2608_FLAGS:
+    case VGM_SN76489_FLAGS:
+    case VGM_LOOP_MODIFIER:
       return parse_uchar (vgm->buffer, attribute, vgm->size);
     case VGM_VERSION:
       return parse_bcd (vgm->buffer, attribute, vgm->size);
@@ -282,4 +325,3 @@ vgm_validate_buffer (const unsigned char *buffer, size_t size)
     return 1;
   return 0;
 }
-

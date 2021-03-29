@@ -66,8 +66,8 @@ Test (header, test_create_vgm_success)
   Vgm *vgm;
   vgm = vgm_create (buffer, 0, sizeof (buffer));
   cr_assert_not_null (vgm);
-  cr_assert_eq (vgm->eof_offset, 1);
-  cr_assert_eq (vgm->version, 12345678);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_EOF), 1);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_VERSION), 12345678);
   vgm_free (vgm);
 }
 
@@ -80,16 +80,22 @@ Test (header, test_create_vgm_v100)
   Vgm *vgm;
   vgm = vgm_create (buffer, 0, sizeof (buffer));
   cr_assert_not_null (vgm);
-  cr_assert_eq (vgm->eof_offset, 1);
-  cr_assert_eq (vgm->version, 100);
-  cr_assert_eq (vgm->sn76489_clock, 2);
-  cr_assert_eq (vgm->ym2413_clock, 3);
-  cr_assert_eq (vgm->gd3_offset, 4);
-  cr_assert_eq (vgm->total_num_samples, 5);
-  cr_assert_eq (vgm->loop_offset, 6);
-  cr_assert_eq (vgm->loop_num_samples, 7);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_EOF), 1);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_VERSION), 100);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_SN76489), 2);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_YM2413), 3);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_GD3_OFFSET), 4);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_TOTAL_NUM_SAMPLES), 5);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_LOOP_OFFSET), 6);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_LOOP_NUM_SAMPLES), 7);
 
-  cr_assert_eq (vgm->data_offset, 0x40);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_SN76489_FEEDBACK), 9);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_SN76489_SHIFT_REG_WIDTH), 0x10);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_YM2612), vgm_get_attr(vgm, VGM_YM2413));
+  cr_assert_eq (vgm_get_attr(vgm, VGM_YM2151), vgm_get_attr(vgm, VGM_YM2413));
+
+  cr_assert_eq (vgm_get_attr(vgm, VGM_DATA_OFFSET), 0x40);
+
   vgm_free (vgm);
 }
 
@@ -102,22 +108,24 @@ Test (header, test_create_vgm_v101)
   Vgm *vgm;
   vgm = vgm_create (buffer, 0, sizeof (buffer));
   cr_assert_not_null (vgm);
-  cr_assert_eq (vgm->eof_offset, 1);
-  cr_assert_eq (vgm->version, 101);
-  cr_assert_eq (vgm->sn76489_clock, 2);
-  cr_assert_eq (vgm->ym2413_clock, 3);
-  cr_assert_eq (vgm->gd3_offset, 4);
-  cr_assert_eq (vgm->total_num_samples, 5);
-  cr_assert_eq (vgm->loop_offset, 6);
-  cr_assert_eq (vgm->loop_num_samples, 7);
-  cr_assert_eq (vgm->rate, 8);
 
-  cr_assert_eq (vgm->sn76489_feedback, 9);
-  cr_assert_eq (vgm->sn76489_shift_reg_width, 0x10);
-  cr_assert_eq (vgm->ym2612_clock, vgm->ym2413_clock);
-  cr_assert_eq (vgm->ym2151_clock, vgm->ym2413_clock);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_EOF), 1);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_VERSION), 101);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_SN76489), 2);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_YM2413), 3);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_GD3_OFFSET), 4);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_TOTAL_NUM_SAMPLES), 5);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_LOOP_OFFSET), 6);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_LOOP_NUM_SAMPLES), 7);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_RATE), 8);
 
-  cr_assert_eq (vgm->data_offset, 0x40);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_SN76489_FEEDBACK), 9);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_SN76489_SHIFT_REG_WIDTH), 0x10);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_YM2612), vgm_get_attr(vgm, VGM_YM2413));
+  cr_assert_eq (vgm_get_attr(vgm, VGM_YM2151), vgm_get_attr(vgm, VGM_YM2413));
+
+  cr_assert_eq (vgm_get_attr(vgm, VGM_DATA_OFFSET), 0x40);
+
   vgm_free (vgm);
 }
 
@@ -130,22 +138,24 @@ Test (header, test_create_vgm_v110)
   Vgm *vgm;
   vgm = vgm_create (buffer, 0, sizeof (buffer));
   cr_assert_not_null (vgm);
-  cr_assert_eq (vgm->eof_offset, 1);
-  cr_assert_eq (vgm->version, 110);
-  cr_assert_eq (vgm->sn76489_clock, 2);
-  cr_assert_eq (vgm->ym2413_clock, 3);
-  cr_assert_eq (vgm->gd3_offset, 4);
-  cr_assert_eq (vgm->total_num_samples, 5);
-  cr_assert_eq (vgm->loop_offset, 6);
-  cr_assert_eq (vgm->loop_num_samples, 7);
-  cr_assert_eq (vgm->rate, 8);
 
-  cr_assert_eq (vgm->sn76489_feedback, 9);
-  cr_assert_eq (vgm->sn76489_shift_reg_width, 0xf1);
-  cr_assert_eq (vgm->ym2612_clock, 0x0a);
-  cr_assert_eq (vgm->ym2151_clock, 0x0b);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_EOF), 1);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_VERSION), 110);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_SN76489), 2);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_YM2413), 3);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_GD3_OFFSET), 4);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_TOTAL_NUM_SAMPLES), 5);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_LOOP_OFFSET), 6);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_LOOP_NUM_SAMPLES), 7);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_RATE), 8);
 
-  cr_assert_eq (vgm->data_offset, 0x40);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_SN76489_FEEDBACK), 9);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_SN76489_SHIFT_REG_WIDTH), 0xf1);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_YM2612), 0x0a);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_YM2151), 0x0b);
+
+  cr_assert_eq (vgm_get_attr(vgm, VGM_DATA_OFFSET), 0x40);
+
   vgm_free (vgm);
 }
 
@@ -158,45 +168,47 @@ Test (header, test_create_vgm_v150)
   Vgm *vgm;
   vgm = vgm_create (buffer, 0, sizeof (buffer));
   cr_assert_not_null (vgm);
-  cr_assert_eq (vgm->eof_offset, 1);
-  cr_assert_eq (vgm->version, 150);
-  cr_assert_eq (vgm->sn76489_clock, 2);
-  cr_assert_eq (vgm->ym2413_clock, 3);
-  cr_assert_eq (vgm->gd3_offset, 4);
-  cr_assert_eq (vgm->total_num_samples, 5);
-  cr_assert_eq (vgm->loop_offset, 6);
-  cr_assert_eq (vgm->loop_num_samples, 7);
-  cr_assert_eq (vgm->rate, 8);
 
-  cr_assert_eq (vgm->sn76489_feedback, 9);
-  cr_assert_eq (vgm->sn76489_shift_reg_width, 0xf1);
-  cr_assert_eq (vgm->ym2612_clock, 0x0a);
-  cr_assert_eq (vgm->ym2151_clock, 0x0b);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_EOF), 1);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_VERSION), 150);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_SN76489), 2);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_YM2413), 3);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_GD3_OFFSET), 4);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_TOTAL_NUM_SAMPLES), 5);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_LOOP_OFFSET), 6);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_LOOP_NUM_SAMPLES), 7);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_RATE), 8);
 
-  cr_assert_eq (vgm->sn76489_flags, 0x0);
-  cr_assert_eq (vgm->sega_pcm_clock, 0x0);   // 0x38
-  cr_assert_eq (vgm->sega_pcm_int_reg, 0x0); // 0x3c
-  cr_assert_eq (vgm->rf5c68_clock, 0x0);     // 0x40
-  cr_assert_eq (vgm->ym2203_clock, 0x0);     // 0x44
-  cr_assert_eq (vgm->ym2608_clock, 0x0);     // 0x48
-  cr_assert_eq (vgm->ym2610_clock, 0x0);     // 0x4c
-  cr_assert_eq (vgm->ym3812_clock, 0x0);     // 0x50
-  cr_assert_eq (vgm->ym3526_clock, 0x0);     // 0x54
-  cr_assert_eq (vgm->y8950_clock, 0x0);      // 0x58
-  cr_assert_eq (vgm->ymf262_clock, 0x0);     // 0x5c
-  cr_assert_eq (vgm->ymf278b_clock, 0x0);    // 0x60
-  cr_assert_eq (vgm->ymf271_clock, 0x0);     // 0x64
-  cr_assert_eq (vgm->ymz280b_clock, 0x0);    // 0x68
-  cr_assert_eq (vgm->rf5c164_clock, 0x0);    // 0x6c
-  cr_assert_eq (vgm->pwm_clock, 0x0);        // 0x70
-  cr_assert_eq (vgm->ay8910_clock, 0x0);     // 0x74
-  cr_assert_eq (vgm->ay8910_chip_type, 0x0); // 0x78
-  cr_assert_eq (vgm->ay8910_flags, 0x0);     // 0x79
-  cr_assert_eq (vgm->ym2203_flags, 0x0);     // 0x7a
-  cr_assert_eq (vgm->ym2608_flags, 0x0);     // 0x7b
-  cr_assert_eq (vgm->loop_modifier, 0x0);    // 0x7f
+  cr_assert_eq (vgm_get_attr(vgm, VGM_SN76489_FEEDBACK), 9);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_SN76489_SHIFT_REG_WIDTH), 0xf1);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_YM2612), 0x0a);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_YM2151), 0x0b);
 
-  cr_assert_eq (vgm->data_offset, 0x0c);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_DATA_OFFSET), 0x0c);
+
+  cr_assert_eq (vgm_get_attr(vgm, VGM_SN76489_FLAGS), 0x0);  
+  cr_assert_eq (vgm_get_attr(vgm, VGM_SEGA_PCM), 0x0);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_SEGA_PCM_INTERFACE_REG), 0x0);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_RF5C68), 0x0);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_YM2203), 0x0);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_YM2608), 0x0);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_YM2610), 0x0);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_YM3812), 0x0);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_YM3526), 0x0);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_Y8950), 0x0);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_YMF262), 0x0);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_YMF278B), 0x0);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_YMF271), 0x0);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_YMZ280B), 0x0);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_RF5C164), 0x0);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_PWM), 0x0);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_AY8910), 0x0);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_AY8910_CHIP_TYPE), 0x0);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_AY8910_FLAGS), 0x0);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_YM2203_FLAGS), 0x0);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_YM2608_FLAGS), 0x0);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_LOOP_MODIFIER), 0x0);
+  
   vgm_free (vgm);
 }
 
@@ -209,43 +221,46 @@ Test (header, test_create_vgm_v151)
   Vgm *vgm;
   vgm = vgm_create (buffer, 0, sizeof (buffer));
   cr_assert_not_null (vgm);
-  cr_assert_eq (vgm->eof_offset, 1);
-  cr_assert_eq (vgm->version, 151);
-  cr_assert_eq (vgm->sn76489_clock, 2);
-  cr_assert_eq (vgm->ym2413_clock, 3);
-  cr_assert_eq (vgm->gd3_offset, 4);
-  cr_assert_eq (vgm->total_num_samples, 5);
-  cr_assert_eq (vgm->loop_offset, 6);
-  cr_assert_eq (vgm->loop_num_samples, 7);
-  cr_assert_eq (vgm->rate, 8);
 
-  cr_assert_eq (vgm->sn76489_feedback, 9);
-  cr_assert_eq (vgm->sn76489_shift_reg_width, 0xf1);
-  cr_assert_eq (vgm->ym2612_clock, 0x0a);
-  cr_assert_eq (vgm->ym2151_clock, 0x0b);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_EOF), 1);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_VERSION), 151);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_SN76489), 2);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_YM2413), 3);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_GD3_OFFSET), 4);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_TOTAL_NUM_SAMPLES), 5);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_LOOP_OFFSET), 6);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_LOOP_NUM_SAMPLES), 7);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_RATE), 8);
 
-  cr_assert_eq (vgm->sn76489_flags, 0xf2);
-  cr_assert_eq (vgm->sega_pcm_clock, 0x0d);   // 0x38
-  cr_assert_eq (vgm->sega_pcm_int_reg, 0x0e); // 0x3c
-  cr_assert_eq (vgm->rf5c68_clock, 0x0f);     // 0x40
-  cr_assert_eq (vgm->ym2203_clock, 0x10);     // 0x44
-  cr_assert_eq (vgm->ym2608_clock, 0x11);     // 0x48
-  cr_assert_eq (vgm->ym2610_clock, 0x12);     // 0x4c
-  cr_assert_eq (vgm->ym3812_clock, 0x13);     // 0x50
-  cr_assert_eq (vgm->ym3526_clock, 0x14);     // 0x54
-  cr_assert_eq (vgm->y8950_clock, 0x15);      // 0x58
-  cr_assert_eq (vgm->ymf262_clock, 0x16);     // 0x5c
-  cr_assert_eq (vgm->ymf278b_clock, 0x17);    // 0x60
-  cr_assert_eq (vgm->ymf271_clock, 0x18);     // 0x64
-  cr_assert_eq (vgm->ymz280b_clock, 0x19);    // 0x68
-  cr_assert_eq (vgm->rf5c164_clock, 0x1a);    // 0x6c
-  cr_assert_eq (vgm->pwm_clock, 0x1b);        // 0x70
-  cr_assert_eq (vgm->ay8910_clock, 0x1c);     // 0x74
-  cr_assert_eq (vgm->ay8910_chip_type, 0x1d); // 0x78
-  cr_assert_eq (vgm->ay8910_flags, 0xf3);     // 0x79
-  cr_assert_eq (vgm->ym2203_flags, 0xf4);     // 0x7a
-  cr_assert_eq (vgm->ym2608_flags, 0xf5);     // 0x7b
-  cr_assert_eq (vgm->loop_modifier, 0xf8);    // 0x7f
+  cr_assert_eq (vgm_get_attr(vgm, VGM_SN76489_FEEDBACK), 9);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_SN76489_SHIFT_REG_WIDTH), 0xf1);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_YM2612), 0x0a);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_YM2151), 0x0b);
+
+  cr_assert_eq (vgm_get_attr(vgm, VGM_DATA_OFFSET), 0x0c);
+
+  cr_assert_eq (vgm_get_attr(vgm, VGM_SN76489_FLAGS), 0xf2);  
+  cr_assert_eq (vgm_get_attr(vgm, VGM_SEGA_PCM), 0x0d);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_SEGA_PCM_INTERFACE_REG), 0x0e);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_RF5C68), 0x0f);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_YM2203), 0x10);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_YM2608), 0x11);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_YM2610), 0x12);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_YM3812), 0x13);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_YM3526), 0x14);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_Y8950), 0x15);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_YMF262), 0x16);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_YMF278B), 0x17);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_YMF271), 0x18);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_YMZ280B), 0x19);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_RF5C164), 0x1a);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_PWM), 0x1b);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_AY8910), 0x1c);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_AY8910_CHIP_TYPE), 0x1d);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_AY8910_FLAGS), 0xf3);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_YM2203_FLAGS), 0xf4);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_YM2608_FLAGS), 0xf5);
+  cr_assert_eq (vgm_get_attr(vgm, VGM_LOOP_MODIFIER), 0xf8);
 
   cr_assert_eq (vgm->data_offset, 0x0c);
 
