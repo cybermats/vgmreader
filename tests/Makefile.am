@@ -5,7 +5,7 @@ TEST_LOG_DRIVER = env AM_TAP_AWK='$(AWK)' $(SHELL) \
             $(top_srcdir)/build-aux/tap-driver.sh
 
  # Setup Criterion TAP output using ENV
- AM_TESTS_ENVIRONMENT = \
+AM_TESTS_ENVIRONMENT = \
     CRITERION_OUTPUTS='tap:-'; \
     export CRITERION_OUTPUTS;
 
@@ -36,5 +36,5 @@ format:
 .PHONY: check-syntax
 check-syntax:
 	@s=$(suffix $(CHK_SOURCES)); \
-	if [ "$$s" = ".c"  ]; then $(call get_cs_cmdline,C)  $(CHK_SOURCES);\
+	if [ "$$s" = ".c"  ]; then $(call get_cs_cmdline,C) -I../src $(CHK_SOURCES);\
 	else exit 1; fi
