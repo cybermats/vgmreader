@@ -164,4 +164,6 @@ dkms.conf
 *.tap
 build_aux
 vgmreader-*.tar.gz
-.ccls-cache/*
+.ccls-cache/**/
+
+src/vgmreader
