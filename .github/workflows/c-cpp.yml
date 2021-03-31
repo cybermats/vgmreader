@@ -13,8 +13,19 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - name: Download Criterion
+      uses: i3h/download-release-asset@v1.2.0
+      with:
+        owner: Snaipe
+        repo: Criterion
+        tag: v2.3.3
+        file: criterion-v2.3.3-linux-x86_64.tar.bz2
+    - name: Inflate Criterion
+      run: tar xf criterion-v2.3.3-linux-x86_64.tar.bz2
     - name: Install Criterion
-      run: sudo add-apt-repository ppa:snaipewastaken/ppa && sudo apt-get update && sudo apt-get install criterion-dev
+      run: sudo cp -R criterion-v2.3.3/* /usr/local
+    - name: Update LDs
+      run: sudo ldconfig
     - name: autoreconf
       run: autoreconf -i
     - name: configure
