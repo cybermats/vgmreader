@@ -1,3 +1,5 @@
+include $(top_srcdir)/flymake.mk
+
 # use the TAP log driver
 TEST_LOG_DRIVER = env AM_TAP_AWK='$(AWK)' $(SHELL) \
             $(top_srcdir)/build-aux/tap-driver.sh
@@ -31,3 +33,8 @@ TESTS = criterion_tests
 format:
 	clang-format -i $(CFILES) $(HFILES)
 
+.PHONY: check-syntax
+check-syntax:
+	@s=$(suffix $(CHK_SOURCES)); \
+	if [ "$$s" = ".c"  ]; then $(call get_cs_cmdline,C)  $(CHK_SOURCES);\
+	else exit 1; fi

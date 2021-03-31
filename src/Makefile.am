@@ -1,3 +1,5 @@
+include $(top_srcdir)/flymake.mk
+
 #AM_CPPFLAGS = -I${top_srcdir}/src
 ACLOCAL_AMFLAGS = -I m4
 
@@ -26,3 +28,9 @@ vgmreader_LDADD = libvgmreader.la
 .PHONY: format
 format:
 	clang-format -i $(CFILES) $(HFILES)
+
+.PHONY: check-syntax
+check-syntax:
+	@s=$(suffix $(CHK_SOURCES)); \
+	if [ "$$s" = ".c"  ]; then $(call get_cs_cmdline,C)  $(CHK_SOURCES);\
+	else exit 1; fi
