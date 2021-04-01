@@ -256,8 +256,10 @@ vgm_process(const Vgm *vgm, int offset, VgmCommand *command)
     }
 
   // Single byte argument commands.
-  if (c == 0x4f ||
-      c == 0x50)
+  if ((c >= 0x30 &&
+       c <= 0x3f) ||
+      (c == 0x4f ||
+       c == 0x50))
     {
       command->data = vgm->buffer + offset + 1;
       return offset + 2;
@@ -270,6 +272,24 @@ vgm_process(const Vgm *vgm, int offset, VgmCommand *command)
     {
       command->data = vgm->buffer + offset + 1;
       return offset + 3;
+    }
+
+  if ((c >= 0xc0 &&
+       c <= 0xd6) ||
+      (c >= 0xc9 &&
+       c <= 0xcf) ||
+      (c >= 0xd7 &&
+       c <= 0xdf))
+    {
+      command->data = vgm->buffer + offset + 1;
+      return offset + 4;
+    }
+
+  if (c >= 0xe0 &&
+       c <= 0xff)
+    {
+      command->data = vgm->buffer + offset + 1;
+      return offset + 5;
     }
   
   return 0;
