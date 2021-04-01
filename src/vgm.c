@@ -229,3 +229,48 @@ vgm_validate_buffer (const unsigned char *buffer, size_t size)
     return 1;
   return 0;
 }
+
+
+size_t
+vgm_process(const Vgm *vgm, int offset, VgmCommand *command)
+{
+  assert(vgm);
+  assert(vgm->buffer);
+  assert(command);
+  uint8_t c = vgm->buffer[offset];
+  command->command = c;
+
+  // No argument commands.
+  if (c == 0x62 ||
+      c == 0x63 ||
+      c == 0x66)
+    {
+      command->data = NULL;
+      return offset + 1;
+    }
+
+  if ((c >= 0x70) && (c < 0x90))
+    {
+      command->data = NULL;
+      return offset + 1;
+    }
+
+  // Single byte argument commands.
+  if (c == 0x4f ||
+      c == 0x50)
+    {
+      command->data = vgm->buffer + offset + 1;
+      return offset + 2;
+    }
+
+  if ((c >= 0x51 &&
+       c <= 0x61) ||
+      (c >= 0xa0 &&
+       c < 0xc0))
+    {
+      command->data = vgm->buffer + offset + 1;
+      return offset + 3;
+    }
+  
+  return 0;
+}
