@@ -3,6 +3,7 @@
 
 #include <stdlib.h>
 #include <stdint.h>
+#include <stdio.h>
 
 // Version 1.00
 #define VGM_EOF 0x04
@@ -70,6 +71,7 @@ typedef struct
 {
   uint8_t command;
   const uint8_t *data;
+  size_t size;
 } VgmCommand;
   
 
@@ -79,7 +81,9 @@ size_t vgm_get_tags (const Vgm *vgm, char *dst, size_t size);
 
 uint32_t vgm_get_attr(const Vgm *vgm, int attribute);
 
-size_t vgm_process(const Vgm *vgm, int offset, VgmCommand *command);
+size_t vgm_next_command(const Vgm *vgm, int offset, VgmCommand *command);
+
+int vgm_process_command(FILE *fp, VgmCommand *command);
 
 int vgm_validate_buffer (const uint8_t *buffer, size_t size);
 

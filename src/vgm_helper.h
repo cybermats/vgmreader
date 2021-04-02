@@ -2,15 +2,16 @@
 #define VGM_HELPER_H
 
 #include <stdlib.h>
+#include <stdint.h>
 
-unsigned int
-parse_uint (const unsigned char *buffer, int offset, size_t size);
-unsigned int
-parse_ushort (const unsigned char *buffer, int offset, size_t size);
-unsigned int
-parse_uchar (const unsigned char *buffer, int offset, size_t size);
-unsigned int
-parse_bcd (const unsigned char *buffer, int offset, size_t size);
+uint32_t
+parse_uint (const uint8_t *buffer, int offset, size_t size);
+uint32_t
+parse_ushort (const uint8_t *buffer, int offset, size_t size);
+uint32_t
+parse_uchar (const uint8_t *buffer, int offset, size_t size);
+uint32_t
+parse_bcd (const uint8_t *buffer, int offset, size_t size);
 
 
 

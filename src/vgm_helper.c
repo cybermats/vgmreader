@@ -2,15 +2,15 @@
 #include <assert.h>
 
 
-unsigned int
-parse_uint (const unsigned char *buffer, int offset, size_t size)
+uint32_t
+parse_uint (const uint8_t *buffer, int offset, size_t size)
 {
   assert (buffer);
   assert (size >= 4);
   union
   {
-    char c[4];
-    unsigned int v;
+    uint8_t c[4];
+    uint32_t v;
   } im;
   im.c[0] = buffer[offset];
   im.c[1] = buffer[offset + 1];
@@ -19,38 +19,38 @@ parse_uint (const unsigned char *buffer, int offset, size_t size)
   return im.v;
 }
 
-unsigned int
-parse_ushort (const unsigned char *buffer, int offset, size_t size)
+uint32_t
+parse_ushort (const uint8_t *buffer, int offset, size_t size)
 {
   assert (buffer);
   assert (size >= 2);
   union
   {
-    char c[2];
-    unsigned short v;
+    uint8_t c[2];
+    uint16_t v;
   } im;
   im.c[0] = buffer[offset];
   im.c[1] = buffer[offset + 1];
   return im.v;
 }
 
-unsigned int
-parse_uchar (const unsigned char *buffer, int offset, size_t size)
+uint32_t
+parse_uchar (const uint8_t *buffer, int offset, size_t size)
 {
   assert (buffer);
   assert (size >= 1);
-  return (unsigned char)buffer[offset];
+  return (uint8_t)buffer[offset];
 }
 
-unsigned int
-parse_bcd (const unsigned char *buffer, int offset, size_t size)
+uint32_t
+parse_bcd (const uint8_t *buffer, int offset, size_t size)
 {
   assert (buffer);
   assert ((size - offset) >= 4);
-  unsigned int value = 0;
+  uint32_t value = 0;
   for (int i = offset + 3; i >= offset; --i)
     {
-      unsigned char c = buffer[i];
+      uint8_t c = buffer[i];
       value *= 10;
       value += c >> 4;
       value *= 10;

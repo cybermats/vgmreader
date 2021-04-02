@@ -1,2 +1,3 @@
 clang
 -Isrc
+-I/usr/local/Cellar/criterion/2.3.3/include

@@ -40,7 +40,24 @@ main (int argc, char *argv[])
   char tags[1024];
   tags[0] = 0;
   vgm_get_tags (vgm, tags, 1024);
-  printf ("Tags: (%s), ", tags);
+  printf ("Tags: [%s], ", tags);
+
+  uint32_t total_num_samples = vgm_get_attr(vgm, VGM_TOTAL_NUM_SAMPLES);
+  uint32_t loop_offset = vgm_get_attr(vgm, VGM_LOOP_OFFSET);
+  uint32_t loop_num_samples = vgm_get_attr(vgm, VGM_LOOP_NUM_SAMPLES);
+  printf("Samples: %d", total_num_samples);
+  if (loop_offset) {
+    printf(", Loop Samples: %d", loop_num_samples);
+  }
+  printf("\n");
+
+  size_t offset = vgm_get_attr(vgm, VGM_DATA_OFFSET) + 0x34;
+  while (offset)
+    {
+      VgmCommand cmd;
+      offset = vgm_next_command(vgm, offset, &cmd);
+      vgm_process_command(stdout, &cmd);      
+    }
 
   printf ("\n");
 

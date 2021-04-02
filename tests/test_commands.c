@@ -1,3 +1,4 @@
+#include <stdint.h>
 #include <criterion/criterion.h>
 #include <signal.h>
 
@@ -20,7 +21,7 @@ static unsigned char master_buffer[] = {
   0x51, 0xaa, 0xdd, 0x00, 0x00, 0x00, 0x00, 0x00, // 0x58 // Two byte Arg
   0xc0, 0xbb, 0xaa, 0xdd, 0x00, 0x00, 0x00, 0x00, // 0x60 // Three byte Arg.
   0xe0, 0xaa, 0xbb, 0xcc, 0xdd, 0x00, 0x00, 0x00, // 0x68 // Four bytes
-  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // 0x70
+  0x67, 0x66, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01, // 0x70 // Data block
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // 0x78
   0x1f, 0x00, 0x00, 0x00, 0x20, 0x00, 0x00, 0x00, 0x21, 0x00, 0x00, 0x00, 0x22,
   0x00, 0x00, 0x00, 0x23, 0x00, 0x00, 0x00, 0x24, 0x00, 0x00, 0x00, 0x25, 0x00,
@@ -55,8 +56,8 @@ Test (command, test_bad_format, .signal = SIGABRT)
 {
   int offset = 0x40;
   VgmCommand command;
-  vgm_process(NULL, 0, NULL);
-  cr_assert_fail();
+  vgm_next_command(NULL, 0, NULL);
+  cr_assert(0);
 }
 
 Test (command, test_zero_args)
@@ -64,7 +65,7 @@ Test (command, test_zero_args)
   cr_assert_not_null(g_vgm);
   int offset = 0x40;
   VgmCommand command;
-  cr_expect_eq(vgm_process(g_vgm, offset, &command), offset + 1);
+  cr_expect_eq(vgm_next_command(g_vgm, offset, &command), offset + 1);
   cr_expect_eq(command.command, 0x62);
   cr_expect_null(command.data);
 }
@@ -74,7 +75,7 @@ Test (command, test_one_nibble_args)
   cr_assert_not_null(g_vgm);
   int offset = 0x48;
   VgmCommand command;
-  cr_expect_eq(vgm_process(g_vgm, offset, &command), offset + 1);
+  cr_expect_eq(vgm_next_command(g_vgm, offset, &command), offset + 1);
   cr_expect_eq(command.command, 0x77);
   cr_expect_null(command.data);
 }
@@ -84,7 +85,7 @@ Test (command, test_one_byte_args)
   cr_assert_not_null(g_vgm);
   int offset = 0x50;
   VgmCommand command;
-  cr_expect_eq(vgm_process(g_vgm, offset, &command), offset + 2);
+  cr_expect_eq(vgm_next_command(g_vgm, offset, &command), offset + 2);
   cr_expect_eq(command.command, 0x4f);
   cr_expect_eq(command.data[0], 0xdd);
 }
@@ -94,7 +95,7 @@ Test (command, test_two_byte_args)
   cr_assert_not_null(g_vgm);
   int offset = 0x58;
   VgmCommand command;
-  cr_expect_eq(vgm_process(g_vgm, offset, &command), offset + 3);
+  cr_expect_eq(vgm_next_command(g_vgm, offset, &command), offset + 3);
   cr_expect_eq(command.command, 0x51);
   cr_expect_eq(command.data[0], 0xaa);
   cr_expect_eq(command.data[1], 0xdd);
@@ -105,7 +106,7 @@ Test (command, test_three_byte_args)
   cr_assert_not_null(g_vgm);
   int offset = 0x60;
   VgmCommand command;
-  cr_expect_eq(vgm_process(g_vgm, offset, &command), offset + 4);
+  cr_expect_eq(vgm_next_command(g_vgm, offset, &command), offset + 4);
   cr_expect_eq(command.command, 0xc0);
   cr_expect_eq(command.data[0], 0xbb);
   cr_expect_eq(command.data[1], 0xaa);
@@ -117,10 +118,20 @@ Test (command, test_four_byte_args)
   cr_assert_not_null(g_vgm);
   int offset = 0x68;
   VgmCommand command;
-  cr_expect_eq(vgm_process(g_vgm, offset, &command), offset + 5);
+  cr_expect_eq(vgm_next_command(g_vgm, offset, &command), offset + 5);
   cr_expect_eq(command.command, 0xe0);
   cr_expect_eq(command.data[0], 0xaa);
   cr_expect_eq(command.data[1], 0xbb);
   cr_expect_eq(command.data[2], 0xcc);
   cr_expect_eq(command.data[3], 0xdd);
+}
+
+Test (command, test_data_block)
+{
+  cr_assert_not_null(g_vgm);
+  int offset = 0x70;
+  VgmCommand command;
+  cr_expect_eq(vgm_next_command(g_vgm, offset, &command), offset + 8);
+  cr_expect_eq(command.command, 0x67);
+
 }
