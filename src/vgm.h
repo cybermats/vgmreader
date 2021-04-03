@@ -72,6 +72,16 @@ typedef struct
   size_t size;
 } VgmCommand;
 
+typedef enum {
+  unknown = 0,
+  none,
+  game_gear,
+  psg,
+  ym2413,
+
+} VgmCpu;
+
+
 Vgm *vgm_create (const unsigned char *buffer, size_t offset, size_t size);
 void vgm_free (Vgm *vgm);
 size_t vgm_get_tags (const Vgm *vgm, char *dst, size_t size);
@@ -79,6 +89,8 @@ size_t vgm_get_tags (const Vgm *vgm, char *dst, size_t size);
 uint32_t vgm_get_attr (const Vgm *vgm, int attribute);
 
 size_t vgm_next_command (const Vgm *vgm, size_t offset, VgmCommand *command);
+
+VgmCpu vgm_get_command_cpu(const VgmCommand *command);
 
 int vgm_process_command (FILE *fp, VgmCommand *command);
 

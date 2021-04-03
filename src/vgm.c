@@ -254,6 +254,98 @@ vgm_validate_buffer (const unsigned char *buffer, size_t size)
   return 0;
 }
 
+enum cmd_type_t
+  {
+    cmd_type_none,
+    cmd_type_nibble,
+    cmd_type_byte,
+    cmd_type_byte_byte,
+    cmd_type_short_byte,
+    cmd_type_short,
+    cmd_type_data_block,
+    cmd_type_int,
+  };
+
+enum action_type_t
+  {
+    action_type_none,
+    action_type_wait,
+    action_type_game_gear_pcm,
+    action_type_psg,
+    action_type_ym2413,
+    action_type_ym2612,
+    action_type_ym2151,
+    action_type_ym2203,
+    action_type_ym2608,
+    action_type_ym2610,
+    action_type_ym3812,
+    action_type_ym3526,
+    action_type_y8950,
+    action_type_ymz280b,
+    action_type_ymf262,
+    action_type_reserved,
+    action_type_data_block,
+    action_type_eos,
+    action_type_sega_pcm,
+  };
+
+struct command_info_t
+{
+  uint8_t cmd;
+  enum cmd_type_t cmd_type;
+  enum action_type_t action_type;
+  char short_desc[128];
+};
+
+struct command_info_t command_info[] =
+  {
+    { 0x30, cmd_type_byte, action_type_reserved, "reserved" },
+    { 0x40, cmd_type_byte_byte, action_type_reserved, "reserved" },    
+    
+    { 0x4f, cmd_type_byte, action_type_game_gear_pcm, "Write %#04x to port 0x06" },
+    { 0x50, cmd_type_byte, action_type_psg, "Write %#04x" },
+
+    { 0x51, cmd_type_byte_byte, action_type_ym2413, "[%#04x] <- %#04x" },
+    { 0x52, cmd_type_byte_byte, action_type_ym2612, "[%#04x]:0 <- %#04x" },
+    { 0x53, cmd_type_byte_byte, action_type_ym2612, "[%#04x]:1 <- %#04x" },
+    { 0x54, cmd_type_byte_byte, action_type_ym2151, "[%#04x] <- %#04x" },
+    { 0x55, cmd_type_byte_byte, action_type_ym2203, "[%#04x] <- %#04x" },
+    { 0x56, cmd_type_byte_byte, action_type_ym2608, "[%#04x]:0 <- %#04x" },
+    { 0x57, cmd_type_byte_byte, action_type_ym2608, "[%#04x]:1 <- %#04x" },
+    { 0x58, cmd_type_byte_byte, action_type_ym2610, "[%#04x]:0 <- %#04x" },
+    { 0x59, cmd_type_byte_byte, action_type_ym2610, "[%#04x]:1 <- %#04x" },
+    { 0x5a, cmd_type_byte_byte, action_type_ym3812, "[%#04x] <- %#04x" },
+    { 0x5b, cmd_type_byte_byte, action_type_ym3526, "[%#04x] <- %#04x" },
+    { 0x5c, cmd_type_byte_byte, action_type_y8950, "[%#04x] <- %#04x" },
+    { 0x5d, cmd_type_byte_byte, action_type_ymz280b, "[%#04x] <- %#04x" },
+    { 0x5e, cmd_type_byte_byte, action_type_ymf262, "[%#04x]:0 <- %#04x" },
+    { 0x5f, cmd_type_byte_byte, action_type_ymf262, "[%#04x]:1 <- %#04x" },
+
+    { 0x61, cmd_type_short, action_type_wait, "Samples: %d" },
+    { 0x62, cmd_type_none, action_type_wait, "One frame (60Hz)" },
+    { 0x63, cmd_type_none, action_type_wait, "One frame (50Hz)" },
+
+    { 0x66, cmd_type_none, action_type_eos, "End of sound data" },
+
+    { 0x67, cmd_type_data_block, action_type_data_block, "Data Type %#04x, Size %#04x" },
+    
+    { 0x70, cmd_type_nibble, action_type_wait, "Samples: %d" },
+
+    { 0x80, cmd_type_nibble, action_type_ym2612, "[0x2a]:0 <- data bank, then wait %d samples" },
+
+    { 0xc0, cmd_type_short_byte, action_type_sega_pcm, "[%#06x] <- %#04x" },
+
+    { 0xe0, cmd_type_int, action_type_ym2612, "Seek to offset [%#010x] in PCM Data bank" },
+    
+  };
+
+static int command_info_compare(const void *key, const void *member)
+{
+  int16_t k = *((uint8_t*)key);
+  int16_t m = ((struct command_info_t*)member)->cmd;
+  return k - m;
+}
+
 size_t
 vgm_next_command (const Vgm *vgm, size_t offset, VgmCommand *command)
 {
@@ -263,56 +355,61 @@ vgm_next_command (const Vgm *vgm, size_t offset, VgmCommand *command)
   uint8_t c = vgm->buffer[offset];
   command->command = c;
 
-  // No argument commands.
-  if (c == 0x62 || c == 0x63 || c == 0x66)
+  struct command_info_t* elem = bsearch(&c,
+					command_info,
+					sizeof(command_info) / sizeof(struct command_info_t),
+					sizeof(struct command_info_t),
+					command_info_compare);
+  if (NULL == elem)
     {
-      command->data = NULL;
-      return offset + 1;
+      c = c & 0xf0;
+      elem =  bsearch(&c,
+		      command_info,
+		      sizeof(command_info) / sizeof(struct command_info_t),
+		      sizeof(struct command_info_t),
+		      command_info_compare);
+    }
+  if (NULL == elem)
+    {
+      return 0;
     }
 
-  // Nibble argument
-  if ((c >= 0x70) && (c < 0x90))
+  switch (elem->cmd_type)
     {
+    case cmd_type_none:
+    case cmd_type_nibble:
       command->data = NULL;
       return offset + 1;
-    }
-
-  // Single byte argument commands.
-  if ((c >= 0x30 && c <= 0x3f) || (c == 0x4f || c == 0x50))
-    {
+    case cmd_type_byte:
       command->data = vgm->buffer + offset + 1;
       return offset + 2;
-    }
-
-  // Two byte argument
-  if ((c >= 0x51 && c <= 0x61) || (c >= 0xa0 && c < 0xc0))
-    {
+    case cmd_type_byte_byte:
+    case cmd_type_short:
       command->data = vgm->buffer + offset + 1;
       return offset + 3;
-    }
-
-  // Three byte argument
-  if ((c >= 0xc0 && c <= 0xd6) || (c >= 0xc9 && c <= 0xcf)
-      || (c >= 0xd7 && c <= 0xdf))
-    {
+    case cmd_type_short_byte:
       command->data = vgm->buffer + offset + 1;
       return offset + 4;
-    }
+    case cmd_type_data_block:
+      {
+	command->data = vgm->buffer + offset + 7;
+	uint32_t data_size = parse_uint (vgm->buffer, offset + 3, vgm->size);
+	command->size = vgm->size - (offset + 7);
+	return offset + 7 + data_size;
+      }
+    case cmd_type_int:
+      command->data = vgm->buffer + offset + 1;
+      return offset + 5;
+    default:
+      fprintf(stderr, "not found in lookup\n");
+      return 0;
+    };
 
   // Four byte argument
   if (c >= 0xe0 && c <= 0xff)
     {
       command->data = vgm->buffer + offset + 1;
       return offset + 5;
-    }
-
-  // Data block
-  if (c == 0x67)
-    {
-      command->data = vgm->buffer + offset + 7;
-      uint32_t data_size = parse_uint (vgm->buffer, offset + 3, vgm->size);
-      command->size = vgm->size - (offset + 7);
-      return offset + 7 + data_size;
     }
 
   return 0;
@@ -370,9 +467,9 @@ vgm_process_command (FILE *fp, VgmCommand *command)
       fprintf (fp, "[YM2151] Write %#04x to reg %#04x", data, reg);
       switch (reg)
         {
-        case 0x01:
-          fprintf (fp, ", (TEST & LFO RESET)");
-          break;
+        /* case 0x01: */
+        /*   fprintf (fp, ", (TEST & LFO RESET)"); */
+        /*   break; */
         case 0x08:
           fprintf (fp, ", (KEY ON)");
           break;
@@ -436,3 +533,4 @@ vgm_process_command (FILE *fp, VgmCommand *command)
     }
   return -1;
 }
+
