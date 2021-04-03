@@ -1,9 +1,9 @@
 #ifndef VGM_H
 #define VGM_H
 
-#include <stdlib.h>
 #include <stdint.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 // Version 1.00
 #define VGM_EOF 0x04
@@ -19,7 +19,7 @@
 #define VGM_RATE 0x24
 
 // Version 1.10
-#define VGM_SN76489_FEEDBACK 0x28 // 16 bits
+#define VGM_SN76489_FEEDBACK 0x28        // 16 bits
 #define VGM_SN76489_SHIFT_REG_WIDTH 0x2a // 8 bits
 
 // Version 1.51
@@ -50,16 +50,14 @@
 #define VGM_PWM 0x70
 #define VGM_AY8910 0x74
 #define VGM_AY8910_CHIP_TYPE 0x78 // 8 bits
-#define VGM_AY8910_FLAGS 0x79 // 8 bits
-#define VGM_YM2203_FLAGS 0x7a // 8 bits
-#define VGM_YM2608_FLAGS 0x7b // 8 bits
+#define VGM_AY8910_FLAGS 0x79     // 8 bits
+#define VGM_YM2203_FLAGS 0x7a     // 8 bits
+#define VGM_YM2608_FLAGS 0x7b     // 8 bits
 
 // Version 1.60
 
-
 // Version 1.51
 #define VGM_LOOP_MODIFIER 0x7f // 8 bits
-
 
 typedef struct
 {
@@ -73,19 +71,17 @@ typedef struct
   const uint8_t *data;
   size_t size;
 } VgmCommand;
-  
 
 Vgm *vgm_create (const unsigned char *buffer, size_t offset, size_t size);
 void vgm_free (Vgm *vgm);
 size_t vgm_get_tags (const Vgm *vgm, char *dst, size_t size);
 
-uint32_t vgm_get_attr(const Vgm *vgm, int attribute);
+uint32_t vgm_get_attr (const Vgm *vgm, int attribute);
 
-size_t vgm_next_command(const Vgm *vgm, size_t offset, VgmCommand *command);
+size_t vgm_next_command (const Vgm *vgm, size_t offset, VgmCommand *command);
 
-int vgm_process_command(FILE *fp, VgmCommand *command);
+int vgm_process_command (FILE *fp, VgmCommand *command);
 
 int vgm_validate_buffer (const uint8_t *buffer, size_t size);
-
 
 #endif

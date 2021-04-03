@@ -66,8 +66,8 @@ Test (header, test_create_vgm_success)
   Vgm *vgm;
   vgm = vgm_create (buffer, 0, sizeof (buffer));
   cr_assert_not_null (vgm);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_EOF), 1);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_VERSION), 12345678);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_EOF), 1);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_VERSION), 12345678);
   vgm_free (vgm);
 }
 
@@ -80,21 +80,23 @@ Test (header, test_create_vgm_v100)
   Vgm *vgm;
   vgm = vgm_create (buffer, 0, sizeof (buffer));
   cr_assert_not_null (vgm);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_EOF), 1);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_VERSION), 100);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_SN76489), 2);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_YM2413), 3);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_GD3_OFFSET), 4);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_TOTAL_NUM_SAMPLES), 5);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_LOOP_OFFSET), 6);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_LOOP_NUM_SAMPLES), 7);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_EOF), 1);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_VERSION), 100);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_SN76489), 2);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_YM2413), 3);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_GD3_OFFSET), 4);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_TOTAL_NUM_SAMPLES), 5);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_LOOP_OFFSET), 6);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_LOOP_NUM_SAMPLES), 7);
 
-  cr_expect_eq (vgm_get_attr(vgm, VGM_SN76489_FEEDBACK), 9);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_SN76489_SHIFT_REG_WIDTH), 0x10);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_YM2612), vgm_get_attr(vgm, VGM_YM2413));
-  cr_expect_eq (vgm_get_attr(vgm, VGM_YM2151), vgm_get_attr(vgm, VGM_YM2413));
+  cr_expect_eq (vgm_get_attr (vgm, VGM_SN76489_FEEDBACK), 9);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_SN76489_SHIFT_REG_WIDTH), 0x10);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_YM2612),
+                vgm_get_attr (vgm, VGM_YM2413));
+  cr_expect_eq (vgm_get_attr (vgm, VGM_YM2151),
+                vgm_get_attr (vgm, VGM_YM2413));
 
-  cr_expect_eq (vgm_get_attr(vgm, VGM_DATA_OFFSET), 0x40);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_DATA_OFFSET), 0x40);
 
   vgm_free (vgm);
 }
@@ -109,22 +111,24 @@ Test (header, test_create_vgm_v101)
   vgm = vgm_create (buffer, 0, sizeof (buffer));
   cr_assert_not_null (vgm);
 
-  cr_expect_eq (vgm_get_attr(vgm, VGM_EOF), 1);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_VERSION), 101);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_SN76489), 2);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_YM2413), 3);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_GD3_OFFSET), 4);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_TOTAL_NUM_SAMPLES), 5);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_LOOP_OFFSET), 6);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_LOOP_NUM_SAMPLES), 7);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_RATE), 8);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_EOF), 1);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_VERSION), 101);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_SN76489), 2);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_YM2413), 3);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_GD3_OFFSET), 4);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_TOTAL_NUM_SAMPLES), 5);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_LOOP_OFFSET), 6);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_LOOP_NUM_SAMPLES), 7);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_RATE), 8);
 
-  cr_expect_eq (vgm_get_attr(vgm, VGM_SN76489_FEEDBACK), 9);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_SN76489_SHIFT_REG_WIDTH), 0x10);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_YM2612), vgm_get_attr(vgm, VGM_YM2413));
-  cr_expect_eq (vgm_get_attr(vgm, VGM_YM2151), vgm_get_attr(vgm, VGM_YM2413));
+  cr_expect_eq (vgm_get_attr (vgm, VGM_SN76489_FEEDBACK), 9);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_SN76489_SHIFT_REG_WIDTH), 0x10);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_YM2612),
+                vgm_get_attr (vgm, VGM_YM2413));
+  cr_expect_eq (vgm_get_attr (vgm, VGM_YM2151),
+                vgm_get_attr (vgm, VGM_YM2413));
 
-  cr_expect_eq (vgm_get_attr(vgm, VGM_DATA_OFFSET), 0x40);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_DATA_OFFSET), 0x40);
 
   vgm_free (vgm);
 }
@@ -139,22 +143,22 @@ Test (header, test_create_vgm_v110)
   vgm = vgm_create (buffer, 0, sizeof (buffer));
   cr_assert_not_null (vgm);
 
-  cr_expect_eq (vgm_get_attr(vgm, VGM_EOF), 1);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_VERSION), 110);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_SN76489), 2);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_YM2413), 3);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_GD3_OFFSET), 4);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_TOTAL_NUM_SAMPLES), 5);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_LOOP_OFFSET), 6);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_LOOP_NUM_SAMPLES), 7);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_RATE), 8);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_EOF), 1);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_VERSION), 110);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_SN76489), 2);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_YM2413), 3);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_GD3_OFFSET), 4);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_TOTAL_NUM_SAMPLES), 5);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_LOOP_OFFSET), 6);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_LOOP_NUM_SAMPLES), 7);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_RATE), 8);
 
-  cr_expect_eq (vgm_get_attr(vgm, VGM_SN76489_FEEDBACK), 9);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_SN76489_SHIFT_REG_WIDTH), 0xf1);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_YM2612), 0x0a);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_YM2151), 0x0b);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_SN76489_FEEDBACK), 9);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_SN76489_SHIFT_REG_WIDTH), 0xf1);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_YM2612), 0x0a);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_YM2151), 0x0b);
 
-  cr_expect_eq (vgm_get_attr(vgm, VGM_DATA_OFFSET), 0x40);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_DATA_OFFSET), 0x40);
 
   vgm_free (vgm);
 }
@@ -169,46 +173,46 @@ Test (header, test_create_vgm_v150)
   vgm = vgm_create (buffer, 0, sizeof (buffer));
   cr_assert_not_null (vgm);
 
-  cr_expect_eq (vgm_get_attr(vgm, VGM_EOF), 1);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_VERSION), 150);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_SN76489), 2);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_YM2413), 3);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_GD3_OFFSET), 4);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_TOTAL_NUM_SAMPLES), 5);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_LOOP_OFFSET), 6);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_LOOP_NUM_SAMPLES), 7);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_RATE), 8);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_EOF), 1);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_VERSION), 150);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_SN76489), 2);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_YM2413), 3);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_GD3_OFFSET), 4);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_TOTAL_NUM_SAMPLES), 5);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_LOOP_OFFSET), 6);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_LOOP_NUM_SAMPLES), 7);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_RATE), 8);
 
-  cr_expect_eq (vgm_get_attr(vgm, VGM_SN76489_FEEDBACK), 9);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_SN76489_SHIFT_REG_WIDTH), 0xf1);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_YM2612), 0x0a);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_YM2151), 0x0b);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_SN76489_FEEDBACK), 9);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_SN76489_SHIFT_REG_WIDTH), 0xf1);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_YM2612), 0x0a);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_YM2151), 0x0b);
 
-  cr_expect_eq (vgm_get_attr(vgm, VGM_DATA_OFFSET), 0x0c);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_DATA_OFFSET), 0x0c);
 
-  cr_expect_eq (vgm_get_attr(vgm, VGM_SN76489_FLAGS), 0x0);  
-  cr_expect_eq (vgm_get_attr(vgm, VGM_SEGA_PCM), 0x0);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_SEGA_PCM_INTERFACE_REG), 0x0);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_RF5C68), 0x0);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_YM2203), 0x0);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_YM2608), 0x0);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_YM2610), 0x0);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_YM3812), 0x0);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_YM3526), 0x0);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_Y8950), 0x0);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_YMF262), 0x0);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_YMF278B), 0x0);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_YMF271), 0x0);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_YMZ280B), 0x0);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_RF5C164), 0x0);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_PWM), 0x0);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_AY8910), 0x0);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_AY8910_CHIP_TYPE), 0x0);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_AY8910_FLAGS), 0x0);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_YM2203_FLAGS), 0x0);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_YM2608_FLAGS), 0x0);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_LOOP_MODIFIER), 0x0);
-  
+  cr_expect_eq (vgm_get_attr (vgm, VGM_SN76489_FLAGS), 0x0);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_SEGA_PCM), 0x0);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_SEGA_PCM_INTERFACE_REG), 0x0);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_RF5C68), 0x0);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_YM2203), 0x0);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_YM2608), 0x0);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_YM2610), 0x0);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_YM3812), 0x0);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_YM3526), 0x0);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_Y8950), 0x0);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_YMF262), 0x0);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_YMF278B), 0x0);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_YMF271), 0x0);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_YMZ280B), 0x0);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_RF5C164), 0x0);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_PWM), 0x0);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_AY8910), 0x0);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_AY8910_CHIP_TYPE), 0x0);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_AY8910_FLAGS), 0x0);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_YM2203_FLAGS), 0x0);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_YM2608_FLAGS), 0x0);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_LOOP_MODIFIER), 0x0);
+
   vgm_free (vgm);
 }
 
@@ -222,45 +226,45 @@ Test (header, test_create_vgm_v151)
   vgm = vgm_create (buffer, 0, sizeof (buffer));
   cr_assert_not_null (vgm);
 
-  cr_expect_eq (vgm_get_attr(vgm, VGM_EOF), 1);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_VERSION), 151);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_SN76489), 2);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_YM2413), 3);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_GD3_OFFSET), 4);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_TOTAL_NUM_SAMPLES), 5);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_LOOP_OFFSET), 6);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_LOOP_NUM_SAMPLES), 7);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_RATE), 8);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_EOF), 1);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_VERSION), 151);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_SN76489), 2);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_YM2413), 3);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_GD3_OFFSET), 4);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_TOTAL_NUM_SAMPLES), 5);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_LOOP_OFFSET), 6);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_LOOP_NUM_SAMPLES), 7);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_RATE), 8);
 
-  cr_expect_eq (vgm_get_attr(vgm, VGM_SN76489_FEEDBACK), 9);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_SN76489_SHIFT_REG_WIDTH), 0xf1);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_YM2612), 0x0a);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_YM2151), 0x0b);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_SN76489_FEEDBACK), 9);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_SN76489_SHIFT_REG_WIDTH), 0xf1);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_YM2612), 0x0a);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_YM2151), 0x0b);
 
-  cr_expect_eq (vgm_get_attr(vgm, VGM_DATA_OFFSET), 0x0c);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_DATA_OFFSET), 0x0c);
 
-  cr_expect_eq (vgm_get_attr(vgm, VGM_SN76489_FLAGS), 0xf2);  
-  cr_expect_eq (vgm_get_attr(vgm, VGM_SEGA_PCM), 0x0d);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_SEGA_PCM_INTERFACE_REG), 0x0e);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_RF5C68), 0x0f);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_YM2203), 0x10);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_YM2608), 0x11);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_YM2610), 0x12);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_YM3812), 0x13);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_YM3526), 0x14);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_Y8950), 0x15);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_YMF262), 0x16);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_YMF278B), 0x17);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_YMF271), 0x18);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_YMZ280B), 0x19);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_RF5C164), 0x1a);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_PWM), 0x1b);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_AY8910), 0x1c);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_AY8910_CHIP_TYPE), 0x1d);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_AY8910_FLAGS), 0xf3);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_YM2203_FLAGS), 0xf4);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_YM2608_FLAGS), 0xf5);
-  cr_expect_eq (vgm_get_attr(vgm, VGM_LOOP_MODIFIER), 0xf8);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_SN76489_FLAGS), 0xf2);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_SEGA_PCM), 0x0d);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_SEGA_PCM_INTERFACE_REG), 0x0e);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_RF5C68), 0x0f);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_YM2203), 0x10);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_YM2608), 0x11);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_YM2610), 0x12);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_YM3812), 0x13);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_YM3526), 0x14);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_Y8950), 0x15);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_YMF262), 0x16);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_YMF278B), 0x17);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_YMF271), 0x18);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_YMZ280B), 0x19);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_RF5C164), 0x1a);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_PWM), 0x1b);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_AY8910), 0x1c);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_AY8910_CHIP_TYPE), 0x1d);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_AY8910_FLAGS), 0xf3);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_YM2203_FLAGS), 0xf4);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_YM2608_FLAGS), 0xf5);
+  cr_expect_eq (vgm_get_attr (vgm, VGM_LOOP_MODIFIER), 0xf8);
 
   vgm_free (vgm);
 }

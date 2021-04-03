@@ -1,7 +1,6 @@
 #include "vgm_helper.h"
 #include <assert.h>
 
-
 uint32_t
 parse_uint (const uint8_t *buffer, int offset, size_t size)
 {

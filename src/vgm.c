@@ -30,154 +30,154 @@ vgm_get_tags (const Vgm *vgm, char *dst, size_t size)
   int count = 0;
   uint32_t attr = 0;
   char str[128];
-  if ((attr = vgm_get_attr(vgm, VGM_SN76489)))
+  if ((attr = vgm_get_attr (vgm, VGM_SN76489)))
     {
       if (count++)
         strncat (dst, ", ", size);
       strncat (dst, "sn76489", size);
-      snprintf(str, sizeof(str), "sn76489(%d)", attr);
+      snprintf (str, sizeof (str), "sn76489(%d)", attr);
       strncat (dst, str, size);
     }
-  if ((attr = vgm_get_attr(vgm, VGM_YM2413)))
+  if ((attr = vgm_get_attr (vgm, VGM_YM2413)))
     {
       if ((count++))
         strncat (dst, ", ", size);
-      snprintf(str, sizeof(str), "ym2413(%d)", attr);
+      snprintf (str, sizeof (str), "ym2413(%d)", attr);
       strncat (dst, str, size);
     }
-  if ((attr = vgm_get_attr(vgm, VGM_YM2612)))
+  if ((attr = vgm_get_attr (vgm, VGM_YM2612)))
     {
       if ((count++))
         strncat (dst, ", ", size);
-      snprintf(str, sizeof(str), "ym2612(%d)", attr);
+      snprintf (str, sizeof (str), "ym2612(%d)", attr);
       strncat (dst, str, size);
     }
-  if ((attr = vgm_get_attr(vgm, VGM_YM2151)))
+  if ((attr = vgm_get_attr (vgm, VGM_YM2151)))
     {
       if ((count++))
         strncat (dst, ", ", size);
-      snprintf(str, sizeof(str), "ym2151(%d)", attr);
+      snprintf (str, sizeof (str), "ym2151(%d)", attr);
       strncat (dst, str, size);
     }
-  if ((attr = vgm_get_attr(vgm, VGM_SEGA_PCM)))
+  if ((attr = vgm_get_attr (vgm, VGM_SEGA_PCM)))
     {
       if ((count++))
         strncat (dst, ", ", size);
-      snprintf(str, sizeof(str), "segaPCM(%d)", attr);
+      snprintf (str, sizeof (str), "segaPCM(%d)", attr);
       strncat (dst, str, size);
     }
-  if ((attr = vgm_get_attr(vgm, VGM_RF5C68)))
+  if ((attr = vgm_get_attr (vgm, VGM_RF5C68)))
     {
       if ((count++))
         strncat (dst, ", ", size);
-      snprintf(str, sizeof(str), "rf5c68(%d)", attr);
+      snprintf (str, sizeof (str), "rf5c68(%d)", attr);
       strncat (dst, str, size);
     }
-  if ((attr = vgm_get_attr(vgm, VGM_YM2203)))
+  if ((attr = vgm_get_attr (vgm, VGM_YM2203)))
     {
       if ((count++))
         strncat (dst, ", ", size);
-      snprintf(str, sizeof(str), "ym2203(%d)", attr);
+      snprintf (str, sizeof (str), "ym2203(%d)", attr);
       strncat (dst, str, size);
     }
-  if ((attr = vgm_get_attr(vgm, VGM_YM2608)))
+  if ((attr = vgm_get_attr (vgm, VGM_YM2608)))
     {
       if ((count++))
         strncat (dst, ", ", size);
-      snprintf(str, sizeof(str), "ym2608(%d)", attr);
+      snprintf (str, sizeof (str), "ym2608(%d)", attr);
       strncat (dst, str, size);
     }
-  if ((attr = vgm_get_attr(vgm, VGM_YM2610)))
+  if ((attr = vgm_get_attr (vgm, VGM_YM2610)))
     {
       if ((count++))
         strncat (dst, ", ", size);
-      snprintf(str, sizeof(str), "ym2610(%d)", attr);
+      snprintf (str, sizeof (str), "ym2610(%d)", attr);
       strncat (dst, str, size);
     }
-  if ((attr = vgm_get_attr(vgm, VGM_YM3812)))
+  if ((attr = vgm_get_attr (vgm, VGM_YM3812)))
     {
       if ((count++))
         strncat (dst, ", ", size);
-      snprintf(str, sizeof(str), "ym3812(%d)", attr);
+      snprintf (str, sizeof (str), "ym3812(%d)", attr);
       strncat (dst, str, size);
     }
-  if ((attr = vgm_get_attr(vgm, VGM_YM3526)))
+  if ((attr = vgm_get_attr (vgm, VGM_YM3526)))
     {
       if ((count++))
         strncat (dst, ", ", size);
-      snprintf(str, sizeof(str), "ym3526(%d)", attr);
+      snprintf (str, sizeof (str), "ym3526(%d)", attr);
       strncat (dst, str, size);
     }
-  if ((attr = vgm_get_attr(vgm, VGM_Y8950)))
+  if ((attr = vgm_get_attr (vgm, VGM_Y8950)))
     {
       if ((count++))
         strncat (dst, ", ", size);
-      snprintf(str, sizeof(str), "y8950(%d)", attr);
+      snprintf (str, sizeof (str), "y8950(%d)", attr);
       strncat (dst, str, size);
     }
-  if ((attr = vgm_get_attr(vgm, VGM_YMF262)))
+  if ((attr = vgm_get_attr (vgm, VGM_YMF262)))
     {
       if ((count++))
         strncat (dst, ", ", size);
-      snprintf(str, sizeof(str), "ymf262(%d)", attr);
+      snprintf (str, sizeof (str), "ymf262(%d)", attr);
       strncat (dst, str, size);
     }
-  if ((attr = vgm_get_attr(vgm, VGM_YMF278B)))
+  if ((attr = vgm_get_attr (vgm, VGM_YMF278B)))
     {
       if ((count++))
         strncat (dst, ", ", size);
-      snprintf(str, sizeof(str), "ymf278b(%d)", attr);
+      snprintf (str, sizeof (str), "ymf278b(%d)", attr);
       strncat (dst, str, size);
     }
-  if ((attr = vgm_get_attr(vgm, VGM_YMF271)))
+  if ((attr = vgm_get_attr (vgm, VGM_YMF271)))
     {
       if ((count++))
         strncat (dst, ", ", size);
-      snprintf(str, sizeof(str), "ymf271(%d)", attr);
+      snprintf (str, sizeof (str), "ymf271(%d)", attr);
       strncat (dst, str, size);
     }
-  if ((attr = vgm_get_attr(vgm, VGM_YMZ280B)))
+  if ((attr = vgm_get_attr (vgm, VGM_YMZ280B)))
     {
       if ((count++))
         strncat (dst, ", ", size);
-      snprintf(str, sizeof(str), "ymz280b(%d)", attr);
+      snprintf (str, sizeof (str), "ymz280b(%d)", attr);
       strncat (dst, str, size);
     }
-  if ((attr = vgm_get_attr(vgm, VGM_RF5C164)))
+  if ((attr = vgm_get_attr (vgm, VGM_RF5C164)))
     {
       if ((count++))
         strncat (dst, ", ", size);
-      snprintf(str, sizeof(str), "rf5c164(%d)", attr);
+      snprintf (str, sizeof (str), "rf5c164(%d)", attr);
       strncat (dst, str, size);
     }
-  if ((attr = vgm_get_attr(vgm, VGM_PWM)))
+  if ((attr = vgm_get_attr (vgm, VGM_PWM)))
     {
       if ((count++))
         strncat (dst, ", ", size);
-      snprintf(str, sizeof(str), "pwm(%d)", attr);
+      snprintf (str, sizeof (str), "pwm(%d)", attr);
       strncat (dst, str, size);
     }
-  if ((attr = vgm_get_attr(vgm, VGM_AY8910)))
+  if ((attr = vgm_get_attr (vgm, VGM_AY8910)))
     {
       if ((count++))
         strncat (dst, ", ", size);
-      snprintf(str, sizeof(str), "ay8910(%d)", attr);
+      snprintf (str, sizeof (str), "ay8910(%d)", attr);
       strncat (dst, str, size);
     }
-  if ((attr = vgm_get_attr(vgm, VGM_YM2203)))
+  if ((attr = vgm_get_attr (vgm, VGM_YM2203)))
     {
       if ((count++))
         strncat (dst, ", ", size);
-      snprintf(str, sizeof(str), "ym2203(%d)", attr);
+      snprintf (str, sizeof (str), "ym2203(%d)", attr);
       strncat (dst, str, size);
     }
-  if ((attr = vgm_get_attr(vgm, VGM_YM2608)))
+  if ((attr = vgm_get_attr (vgm, VGM_YM2608)))
     {
       if ((count++))
         strncat (dst, ", ", size);
-      snprintf(str, sizeof(str), "ym2608(%d)", attr);
+      snprintf (str, sizeof (str), "ym2608(%d)", attr);
       strncat (dst, str, size);
-      }
+    }
   return 0;
 }
 
@@ -254,20 +254,17 @@ vgm_validate_buffer (const unsigned char *buffer, size_t size)
   return 0;
 }
 
-
 size_t
-vgm_next_command(const Vgm *vgm, size_t offset, VgmCommand *command)
+vgm_next_command (const Vgm *vgm, size_t offset, VgmCommand *command)
 {
-  assert(vgm);
-  assert(vgm->buffer);
-  assert(command);
+  assert (vgm);
+  assert (vgm->buffer);
+  assert (command);
   uint8_t c = vgm->buffer[offset];
   command->command = c;
 
   // No argument commands.
-  if (c == 0x62 ||
-      c == 0x63 ||
-      c == 0x66)
+  if (c == 0x62 || c == 0x63 || c == 0x66)
     {
       command->data = NULL;
       return offset + 1;
@@ -281,40 +278,29 @@ vgm_next_command(const Vgm *vgm, size_t offset, VgmCommand *command)
     }
 
   // Single byte argument commands.
-  if ((c >= 0x30 &&
-       c <= 0x3f) ||
-      (c == 0x4f ||
-       c == 0x50))
+  if ((c >= 0x30 && c <= 0x3f) || (c == 0x4f || c == 0x50))
     {
       command->data = vgm->buffer + offset + 1;
       return offset + 2;
     }
 
   // Two byte argument
-  if ((c >= 0x51 &&
-       c <= 0x61) ||
-      (c >= 0xa0 &&
-       c < 0xc0))
+  if ((c >= 0x51 && c <= 0x61) || (c >= 0xa0 && c < 0xc0))
     {
       command->data = vgm->buffer + offset + 1;
       return offset + 3;
     }
 
   // Three byte argument
-  if ((c >= 0xc0 &&
-       c <= 0xd6) ||
-      (c >= 0xc9 &&
-       c <= 0xcf) ||
-      (c >= 0xd7 &&
-       c <= 0xdf))
+  if ((c >= 0xc0 && c <= 0xd6) || (c >= 0xc9 && c <= 0xcf)
+      || (c >= 0xd7 && c <= 0xdf))
     {
       command->data = vgm->buffer + offset + 1;
       return offset + 4;
     }
 
   // Four byte argument
-  if (c >= 0xe0 &&
-       c <= 0xff)
+  if (c >= 0xe0 && c <= 0xff)
     {
       command->data = vgm->buffer + offset + 1;
       return offset + 5;
@@ -324,7 +310,7 @@ vgm_next_command(const Vgm *vgm, size_t offset, VgmCommand *command)
   if (c == 0x67)
     {
       command->data = vgm->buffer + offset + 7;
-      uint32_t data_size = parse_uint(vgm->buffer, offset + 3, vgm->size);
+      uint32_t data_size = parse_uint (vgm->buffer, offset + 3, vgm->size);
       command->size = vgm->size - (offset + 7);
       return offset + 7 + data_size;
     }
@@ -332,7 +318,8 @@ vgm_next_command(const Vgm *vgm, size_t offset, VgmCommand *command)
   return 0;
 }
 
-int vgm_process_command(FILE *fp, VgmCommand *command)
+int
+vgm_process_command (FILE *fp, VgmCommand *command)
 {
   if (command->command == 0x62)
     {
@@ -351,12 +338,13 @@ int vgm_process_command(FILE *fp, VgmCommand *command)
     }
   if ((command->command & 0xf0) == 0x70)
     {
-      fprintf( fp, "[Wait] Samples: %d\n", (command->command &0x0f)+1);
+      fprintf (fp, "[Wait] Samples: %d\n", (command->command & 0x0f) + 1);
       return 0;
     }
   if ((command->command & 0xf0) == 0x80)
     {
-      fprintf( fp, "[YM2612] port 0 address 2A, wait samples: %d\n", (command->command &0x0f));
+      fprintf (fp, "[YM2612] port 0 address 2A, wait samples: %d\n",
+               (command->command & 0x0f));
       return 0;
     }
   if (command->command == 0x4f)
@@ -367,12 +355,10 @@ int vgm_process_command(FILE *fp, VgmCommand *command)
     }
   if (command->command == 0x50)
     {
-      fprintf (fp, "[PSG] Write %#04x\n",
-               command->data[0]);
+      fprintf (fp, "[PSG] Write %#04x\n", command->data[0]);
       return 0;
     }
-  if (command->command >= 0x30 &&
-      command->command <= 0x3f)
+  if (command->command >= 0x30 && command->command <= 0x3f)
     {
       fprintf (fp, "[reserved]\n");
       return 0;
@@ -381,70 +367,71 @@ int vgm_process_command(FILE *fp, VgmCommand *command)
     {
       uint8_t data = command->data[1];
       uint8_t reg = command->data[0];
-      fprintf (fp, "[YM2151] Write %#04x to reg %#04x", data,reg);
-      switch(reg)
-	{
-	case 0x01:
-	  fprintf(fp, ", (TEST & LFO RESET)");
-	  break;
-	case 0x08:
-	  fprintf(fp, ", (KEY ON)");
-	  break;
-	case 0x0f:
-	  fprintf(fp, ", (NOISE ENABLE, NOISE FREQUENCY)");
-	  break;
-	case 0x11:
-	  fprintf(fp, ", (CLOCK A1)");
-	  break;
-	case 0x12:
-	  fprintf(fp, ", (CLOCK A2)");
-	  break;
-	case 0x13:
-	  fprintf(fp, ", (CLOCK B)");
-	  break;
-	case 0x14:
-	  fprintf(fp, ", (CLOCK FUNCTIONS)");
-	  break;
-	case 0x18:
-	  fprintf(fp, ", (LOW FREQUENCY)");
-	  break;
-	case 0x19:
-	  fprintf(fp, ", (PHASE AND AMP MODULATION)");
-	  break;
-	case 0x1b:
-	  fprintf(fp, ", (CONTROL OUTPUT & WAVE FORM SELECT)");
-	  break;
-	case 0x20:
-	  fprintf(fp, ", (CHANNEL CONTROL)");
-	  break;
-	};
+      fprintf (fp, "[YM2151] Write %#04x to reg %#04x", data, reg);
+      switch (reg)
+        {
+        case 0x01:
+          fprintf (fp, ", (TEST & LFO RESET)");
+          break;
+        case 0x08:
+          fprintf (fp, ", (KEY ON)");
+          break;
+        case 0x0f:
+          fprintf (fp, ", (NOISE ENABLE, NOISE FREQUENCY)");
+          break;
+        case 0x11:
+          fprintf (fp, ", (CLOCK A1)");
+          break;
+        case 0x12:
+          fprintf (fp, ", (CLOCK A2)");
+          break;
+        case 0x13:
+          fprintf (fp, ", (CLOCK B)");
+          break;
+        case 0x14:
+          fprintf (fp, ", (CLOCK FUNCTIONS)");
+          break;
+        case 0x18:
+          fprintf (fp, ", (LOW FREQUENCY)");
+          break;
+        case 0x19:
+          fprintf (fp, ", (PHASE AND AMP MODULATION)");
+          break;
+        case 0x1b:
+          fprintf (fp, ", (CONTROL OUTPUT & WAVE FORM SELECT)");
+          break;
+        case 0x20:
+          fprintf (fp, ", (CHANNEL CONTROL)");
+          break;
+        };
       if (reg >= 0x28 && reg < 0x30)
-	  fprintf(fp, ", (KEY CODE)");
+        fprintf (fp, ", (KEY CODE)");
       if (reg >= 0x30 && reg < 0x38)
-	  fprintf(fp, ", (KEY FRACTION)");
+        fprintf (fp, ", (KEY FRACTION)");
       if (reg >= 0x38 && reg < 0x40)
-	  fprintf(fp, ", (PHASE & AMP MODULATION SENS)");
+        fprintf (fp, ", (PHASE & AMP MODULATION SENS)");
       if (reg >= 0x40 && reg < 0x60)
-	  fprintf(fp, ", (DETUNE & PHASE MULTIPLY)");
+        fprintf (fp, ", (DETUNE & PHASE MULTIPLY)");
       if (reg >= 0x60 && reg < 0x80)
-	  fprintf(fp, ", (TOTAL LEVEL)");
+        fprintf (fp, ", (TOTAL LEVEL)");
       if (reg >= 0x80 && reg < 0xa0)
-	  fprintf(fp, ", (EG ATTACK)");
+        fprintf (fp, ", (EG ATTACK)");
       if (reg >= 0xa0 && reg < 0xc0)
-	  fprintf(fp, ", (EG DELAY 1)");
+        fprintf (fp, ", (EG DELAY 1)");
       if (reg >= 0xc0 && reg < 0xe0)
-	  fprintf(fp, ", (EG DELAY 2)");
+        fprintf (fp, ", (EG DELAY 2)");
       if (reg >= 0xe0)
-	  fprintf(fp, ", (EG DECAY LEVEL, RELEASE RATE)");
-      fprintf(fp, "\n");
+        fprintf (fp, ", (EG DECAY LEVEL, RELEASE RATE)");
+      fprintf (fp, "\n");
       return 0;
     }
 
   if (command->command == 0x67)
     {
-      uint8_t data_type = parse_uchar(command->data, 0, command->size);
-      uint32_t data_size = parse_uint(command->data, 1, command->size);
-      fprintf (fp, "[Data Block] Data Type %#04x, Size %#04x\n", data_type, data_size);
+      uint8_t data_type = parse_uchar (command->data, 0, command->size);
+      uint32_t data_size = parse_uint (command->data, 1, command->size);
+      fprintf (fp, "[Data Block] Data Type %#04x, Size %#04x\n", data_type,
+               data_size);
       return 0;
     }
   return -1;
