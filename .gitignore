@@ -165,5 +165,7 @@ dkms.conf
 build_aux
 vgmreader-*.tar.gz
 .ccls-cache/**/
+**/*.trs
 
 src/vgmreader
+tests/criterion_tests
