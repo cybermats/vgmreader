@@ -5,9 +5,9 @@
 #include <string.h>
 
 Vgm *
-vgm_create (const unsigned char *buffer, int offset, size_t size)
+vgm_create (const unsigned char *buffer, size_t offset, size_t size)
 {
-  const unsigned int header_size = size - offset;
+  const size_t header_size = size - offset;
   if (header_size < 256)
     return NULL;
   Vgm *vgm;
@@ -256,7 +256,7 @@ vgm_validate_buffer (const unsigned char *buffer, size_t size)
 
 
 size_t
-vgm_next_command(const Vgm *vgm, int offset, VgmCommand *command)
+vgm_next_command(const Vgm *vgm, size_t offset, VgmCommand *command)
 {
   assert(vgm);
   assert(vgm->buffer);
