@@ -16,13 +16,9 @@ CFILES =\
 	vgm_helper.c
 
 
-lib_LTLIBRARIES = libvgmreader.la
-libvgmreader_la_SOURCES = $(CFILES) $(HFILES)
 
 bin_PROGRAMS = vgmreader
-vgmreader_SOURCES = main.c
-vgmreader_LDFLAGS = -static
-vgmreader_LDADD = libvgmreader.la
+vgmreader_SOURCES = main.c $(CFILES) $(HFILES)
 
 
 .PHONY: format

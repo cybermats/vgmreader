@@ -12,6 +12,14 @@ AM_TESTS_ENVIRONMENT = \
 AM_CPPFLAGS = -I${top_srcdir}/src $(CRITERION_CFLAGS)
 ACLOCAL_AMFLAGS = -I m4
 
+SRC_DIR=$(top_srcdir)/src
+VPATH=$(SRC_DIR)
+
+C_SRCFILES = $(SRC_DIR)/vgm.c \
+	$(SRC_DIR)/args.c \
+	$(SRC_DIR)/decode.c \
+	$(SRC_DIR)/vgm_helper.c
+
 HFILES =
 
 CFILES = \
@@ -26,7 +34,6 @@ check_PROGRAMS = criterion_tests
 criterion_tests_SOURCES = $(CFILES) $(C_SRCFILES) $(H_SRCFILES)
 criterion_tests_CFLAGS =  $(CRITERION_CFLAGS)
 criterion_tests_LDFLAGS =  $(CRITERION_LIBS) -static
-criterion_tests_LDADD = $(top_builddir)/src/libvgmreader.la
 
 TESTS = criterion_tests
 
