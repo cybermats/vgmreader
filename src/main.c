@@ -15,7 +15,13 @@ main (int argc, char *argv[])
   parse_args (argc, argv, &arguments);
 
   unsigned char *buffer;
-  size_t size = load_file (arguments.input_file, &buffer);
+  FILE *fp = fopen(arguments.input_file, "rb");
+  if (NULL == fp)
+    {
+      perror ("Unable to open file\n");
+      return -1;
+    }
+  size_t size = load_file (fp, &buffer);
   if (size == 0)
     {
       fprintf (stderr, "Unable to parse file.\n");

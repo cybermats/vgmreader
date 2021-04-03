@@ -11,7 +11,7 @@ static char vgm[] = "Vgm ";
 #define CHUNK 16384
 
 int
-file_type (const unsigned char *buffer, size_t size)
+file_type (const uint8_t *buffer, size_t size)
 {
   if (!buffer || !size)
     return VGM_FT_UNKNOWN;
@@ -32,7 +32,7 @@ file_type (const unsigned char *buffer, size_t size)
 }
 
 size_t
-decompress (unsigned char **output, const unsigned char *buffer, size_t size)
+decompress (uint8_t **output, const uint8_t *buffer, size_t size)
 {
   if (!size)
     return 0;
@@ -42,7 +42,7 @@ decompress (unsigned char **output, const unsigned char *buffer, size_t size)
   z_stream strm;
   size_t offset = 0;
   unsigned char out[CHUNK];
-  *output = (unsigned char *)malloc (CHUNK);
+  *output = (uint8_t *)malloc (CHUNK);
   /* allocate inflate state */
   strm.zalloc = Z_NULL;
   strm.zfree = Z_NULL;
@@ -60,7 +60,7 @@ decompress (unsigned char **output, const unsigned char *buffer, size_t size)
   do
     {
       strm.avail_in = size;
-      strm.next_in = (unsigned char *)buffer;
+      strm.next_in = (uint8_t *)buffer;
       /* run inflate() on input until output buffer not full */
       do
         {
@@ -81,7 +81,7 @@ decompress (unsigned char **output, const unsigned char *buffer, size_t size)
           have = CHUNK - strm.avail_out;
           memcpy (*output + offset, out, have);
           offset += have;
-          unsigned char *b = realloc (*output, offset + CHUNK);
+          uint8_t *b = realloc (*output, offset + CHUNK);
           if (!b)
             {
               (void)inflateEnd (&strm);
@@ -101,31 +101,29 @@ decompress (unsigned char **output, const unsigned char *buffer, size_t size)
 }
 
 int
-read_file (const char *filename, unsigned char **buffer, size_t *size)
+read_file (FILE *fp, uint8_t **buffer, size_t *size)
 {
-  FILE *f = fopen (filename, "r");
-  if (!f)
+  if (fseek (fp, 0, SEEK_END))
     return -1;
-  if (fseek (f, 0, SEEK_END))
-    return -2;
-  long s = ftell (f);
+  long s = ftell (fp);
   if (s < 0)
-    return -3;
-  if (fseek (f, 0, SEEK_SET))
-    return -4;
-  *buffer = malloc (s);
-  size_t ret = fread ((void *)(*buffer), 1, s, f);
-  if (ferror (f) != 0)
+    return -1;
+  if (fseek (fp, 0, SEEK_SET))
+    return -1;
+  uint8_t *b = malloc (s);
+  size_t ret = fread ((void *)(b), 1, s, fp);
+  if (ferror (fp) != 0)
     {
-      free (*buffer);
-      return -4;
+      free (b);
+      return -1;
     }
+  *buffer = b;
   *size = ret;
   return 0;
 }
 
 int
-resolve_buffer (unsigned char **buffer, size_t *size)
+resolve_buffer (uint8_t **buffer, size_t *size)
 {
   int ft = file_type (*buffer, *size);
   if (ft == VGM_FT_UNKNOWN)
@@ -134,7 +132,7 @@ resolve_buffer (unsigned char **buffer, size_t *size)
     return 0;
 
   // We have a compressed file.
-  unsigned char *uncompressed;
+  uint8_t *uncompressed;
   size_t un_size = decompress (&uncompressed, *buffer, *size);
   if (un_size == 0)
     return -2;
@@ -147,20 +145,15 @@ resolve_buffer (unsigned char **buffer, size_t *size)
 }
 
 size_t
-load_file (const char *filename, unsigned char **buffer)
+load_file (FILE *fp, uint8_t **buffer)
 {
+  assert(fp);
+  assert(buffer);
   size_t size;
-  int res = read_file (filename, buffer, &size);
-  if (res == -5)
-    {
-      fprintf (stderr, "Unable to open file [%s]\n", filename);
-      return 0;
-    }
-  char msg[256];
+  int res = read_file (fp, buffer, &size);
   if (res != 0)
     {
-      snprintf (msg, sizeof (msg), "Unable to read file [%s]\n", filename);
-      perror (msg);
+      perror ("Unable to read file\n");
       return 0;
     }
 
@@ -168,11 +161,15 @@ load_file (const char *filename, unsigned char **buffer)
   if (res == -1)
     {
       fprintf (stderr, "Unknown file type.\n");
+      free (*buffer);
+      *buffer = NULL;
       return 0;
     }
   if (res == -2)
     {
       fprintf (stderr, "Unable to decompress file.\n");
+      free (*buffer);
+      *buffer = NULL;
       return 0;
     }
 

@@ -21,62 +21,51 @@ static unsigned char uncompressed[] = {
   0x0d, 0x00, 0x00, 0x00, 0x0e, 0x00, 0x00, 0x00  // 0x38
 };
 
-Test (decoder, test_file_type_unknown)
-{
-  const unsigned char buffer[]
-      = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
-  int ft = file_type (buffer, sizeof (buffer));
-  cr_assert_eq (ft, VGM_FT_UNKNOWN);
+Test (decoder, test_null_file, .signal = SIGABRT) {
+  size_t filesize = load_file(NULL, NULL);
+  cr_assert_eq(filesize, 0);
 }
 
-Test (decoder, test_file_type_null)
-{
-  int ft = file_type (NULL, 0);
-  cr_assert_eq (ft, VGM_FT_UNKNOWN);
+Test (decoder, test_empty_buffer) {
+  static uint8_t buffer[] = "";
+  size_t size = sizeof(buffer);
+  FILE *fp = fmemopen(buffer, size, "rb");
+  cr_assert_not_null (fp);
+  uint8_t *out_buffer = NULL;
+  size_t filesize = load_file(fp, &out_buffer);
+  cr_expect_eq (filesize, 0);
+  cr_expect_null (out_buffer);
 }
 
-Test (decoder, test_file_type_empty)
-{
-  const unsigned char buffer[] = "";
-  int ft = file_type (buffer, 0);
-  cr_assert_eq (ft, VGM_FT_UNKNOWN);
+Test (decoder, test_non_vgm_buffer) {
+  static uint8_t buffer[] = "abcdefghijklmnopqrstuvwxyz";
+  size_t size = sizeof(buffer);
+  FILE *fp = fmemopen(buffer, size, "rb");
+  cr_assert_not_null (fp);
+  uint8_t *out_buffer = NULL;
+  size_t filesize = load_file(fp, &out_buffer);
+  cr_expect_eq (filesize, 0);
+  cr_expect_null (out_buffer);
 }
 
-Test (decoder, test_file_type_short_1)
-{
-  const unsigned char buffer[] = "V";
-  int ft = file_type (buffer, 1);
-  cr_assert_eq (ft, VGM_FT_UNKNOWN);
+Test (decoder, test_non_compressed_vgm) {
+  size_t size = sizeof(uncompressed);
+  FILE *fp = fmemopen(uncompressed, size, "rb");
+  cr_assert_not_null (fp);
+  uint8_t *out_buffer = NULL;
+  size_t filesize = load_file(fp, &out_buffer);
+  cr_expect_eq (filesize, size);
+  int diff = bcmp (out_buffer, uncompressed, size);
+  cr_expect_eq(diff, 0);
 }
 
-Test (decoder, test_file_type_short_3)
-{
-  const unsigned char buffer[] = "Vgm";
-  int ft = file_type (buffer, 3);
-  cr_assert_eq (ft, VGM_FT_UNKNOWN);
-}
-
-Test (decoder, test_file_type_vgm)
-{
-  const unsigned char buffer[]
-      = { 'V', 'g', 'm', ' ', 0x00, 0x00, 0x00, 0x00 };
-  int ft = file_type (buffer, sizeof (buffer));
-  cr_assert_eq (ft, VGM_FT_VGM);
-}
-
-Test (decoder, test_file_type_vgz)
-{
-  const unsigned char buffer[]
-      = { 0x1f, 0x8b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
-  int ft = file_type (buffer, sizeof (buffer));
-  cr_assert_eq (ft, VGM_FT_VGZ);
-}
-
-Test (decoder, test_decompression)
-{
-  unsigned char *buffer;
-  size_t size = decompress (&buffer, compressed, sizeof (compressed));
-  cr_assert_eq (size, sizeof (uncompressed));
-  int diff = bcmp (buffer, uncompressed, size);
-  cr_assert_eq (diff, 0);
+Test (decoder, test_compressed_vgm) {
+  size_t size = sizeof(compressed);
+  FILE *fp = fmemopen(compressed, size, "rb");
+  cr_assert_not_null (fp);
+  uint8_t *out_buffer = NULL;
+  size_t filesize = load_file(fp, &out_buffer);
+  cr_expect_eq (filesize, sizeof(uncompressed));
+  int diff = bcmp (out_buffer, uncompressed, size);
+  cr_expect_eq(diff, 0);
 }
