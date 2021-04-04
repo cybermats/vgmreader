@@ -302,16 +302,16 @@ struct command_info_t
 
 struct command_info_t command_info[] =
   {
-    { 0x30, cmd_type_byte, action_type_reserved, "reserved" },
-    { 0x40, cmd_type_byte_byte, action_type_reserved, "reserved" },    
+    { 0x30, cmd_type_byte, action_type_reserved, "[reserved]" },
+    { 0x40, cmd_type_byte_byte, action_type_reserved, "[reserved]" },
     
-    { 0x4f, cmd_type_byte, action_type_game_gear_pcm, "Write %#04x to port 0x06" },
-    { 0x50, cmd_type_byte, action_type_psg, "Write %#04x" },
+    { 0x4f, cmd_type_byte, action_type_game_gear_pcm, "[Game Gear PCM] :6 <- %#04x" },
+    { 0x50, cmd_type_byte, action_type_psg, "[PSG] <- %#04x" },
 
     { 0x51, cmd_type_byte_byte, action_type_ym2413, "[%#04x] <- %#04x" },
     { 0x52, cmd_type_byte_byte, action_type_ym2612, "[%#04x]:0 <- %#04x" },
     { 0x53, cmd_type_byte_byte, action_type_ym2612, "[%#04x]:1 <- %#04x" },
-    { 0x54, cmd_type_byte_byte, action_type_ym2151, "[%#04x] <- %#04x" },
+    { 0x54, cmd_type_byte_byte, action_type_ym2151, "[YM2151] [%#04x] <- %#04x" },
     { 0x55, cmd_type_byte_byte, action_type_ym2203, "[%#04x] <- %#04x" },
     { 0x56, cmd_type_byte_byte, action_type_ym2608, "[%#04x]:0 <- %#04x" },
     { 0x57, cmd_type_byte_byte, action_type_ym2608, "[%#04x]:1 <- %#04x" },
@@ -324,25 +324,26 @@ struct command_info_t command_info[] =
     { 0x5e, cmd_type_byte_byte, action_type_ymf262, "[%#04x]:0 <- %#04x" },
     { 0x5f, cmd_type_byte_byte, action_type_ymf262, "[%#04x]:1 <- %#04x" },
 
-    { 0x61, cmd_type_short, action_type_wait, "Samples: %d" },
-    { 0x62, cmd_type_none, action_type_wait, "One frame (60Hz)" },
-    { 0x63, cmd_type_none, action_type_wait, "One frame (50Hz)" },
+    { 0x61, cmd_type_short, action_type_wait, "[Wait] Samples: %d" },
+    { 0x62, cmd_type_none, action_type_wait, "[Wait] One frame (60Hz)" },
+    { 0x63, cmd_type_none, action_type_wait, "[Wait] One frame (50Hz)" },
 
-    { 0x66, cmd_type_none, action_type_eos, "End of sound data" },
+    { 0x66, cmd_type_none, action_type_eos, "[EOS] End of sound data" },
 
-    { 0x67, cmd_type_data_block, action_type_data_block, "Data Type %#04x, Size %#04x" },
-    
-    { 0x70, cmd_type_nibble, action_type_wait, "Samples: %d" },
+    { 0x67, cmd_type_data_block, action_type_data_block, "[Data Block] Data Type %#04x, Size %#04x" },
 
-    { 0x80, cmd_type_nibble, action_type_ym2612, "[0x2a]:0 <- data bank, then wait %d samples" },
+    // TODO: Fix nibble+1 for Wait
+    { 0x70, cmd_type_nibble, action_type_wait, "[Wait] Samples: %d" },
 
-    { 0xa1, cmd_type_byte_byte, action_type_reserved, "reserved" },
+    { 0x80, cmd_type_nibble, action_type_ym2612, "[YM2612] [0x2a]:0 <- data bank, then wait %d samples" },
+
+    { 0xa1, cmd_type_byte_byte, action_type_reserved, "[reserved]" },
 
     
     { 0xc0, cmd_type_short_byte, action_type_sega_pcm, "[%#06x] <- %#04x" },
 
-    { 0xc9, cmd_type_byte_byte_byte, action_type_reserved, "reserved" },
-    { 0xd7, cmd_type_byte_byte_byte, action_type_reserved, "reserved" },
+    { 0xc9, cmd_type_byte_byte_byte, action_type_reserved, "[reserved]" },
+    { 0xd7, cmd_type_byte_byte_byte, action_type_reserved, "[reserved]" },
 
     
     { 0xe0, cmd_type_int, action_type_ym2612, "Seek to offset [%#010x] in PCM Data bank" },
@@ -369,7 +370,7 @@ static uint8_t reduce_command(uint8_t cmd) {
     return 0xc9;
   if (0xd7 <= cmd && 0xe0 > cmd)
     return 0xd7;
-  if (0xe2 <= cmd && 0xff >= cmd)
+  if (0xe2 <= cmd)
     return 0xe2;
   return cmd;
 }
@@ -400,27 +401,32 @@ vgm_next_command (const Vgm *vgm, size_t offset, VgmCommand *command)
     case cmd_type_none:
     case cmd_type_nibble:
       command->data = NULL;
+      command->size = 0;
       return offset + 1;
     case cmd_type_byte:
       command->data = vgm->buffer + offset + 1;
+      command->size = 1;
       return offset + 2;
     case cmd_type_byte_byte:
     case cmd_type_short:
       command->data = vgm->buffer + offset + 1;
+      command->size = 2;
       return offset + 3;
     case cmd_type_short_byte:
     case cmd_type_byte_byte_byte:
       command->data = vgm->buffer + offset + 1;
+      command->size = 3;
       return offset + 4;
     case cmd_type_short_short:
     case cmd_type_int:
       command->data = vgm->buffer + offset + 1;
+      command->size = 4;
       return offset + 5;
     case cmd_type_data_block:
       {
-	command->data = vgm->buffer + offset + 7;
+	command->data = vgm->buffer + offset + 2;
 	uint32_t data_size = parse_uint (vgm->buffer, offset + 3, vgm->size);
-	command->size = vgm->size - (offset + 7);
+	command->size = vgm->size - (offset + 2);
 	return offset + 7 + data_size;
       }
     default:
@@ -434,48 +440,75 @@ vgm_next_command (const Vgm *vgm, size_t offset, VgmCommand *command)
 int
 vgm_process_command (FILE *fp, VgmCommand *command)
 {
-  if (command->command == 0x62)
-    {
-      fprintf (fp, "[Wait] One frame (60Hz)\n");
+  uint8_t lookup_cmd = reduce_command(command->command);
+
+  struct command_info_t* elem = bsearch(&lookup_cmd,
+					command_info,
+					sizeof(command_info) / sizeof(struct command_info_t),
+					sizeof(struct command_info_t),
+					command_info_compare);
+  if (NULL == elem)
       return 0;
-    }
-  if (command->command == 0x63)
+
+  char str[1024];
+  switch (elem->cmd_type)
     {
-      fprintf (fp, "[Wait] One frame (50Hz)\n");
-      return 0;
-    }
-  if (command->command == 0x66)
-    {
-      fprintf (fp, "[EOS] End of sound data\n");
-      return 1;
-    }
-  if ((command->command & 0xf0) == 0x70)
-    {
-      fprintf (fp, "[Wait] Samples: %d\n", (command->command & 0x0f) + 1);
-      return 0;
-    }
-  if ((command->command & 0xf0) == 0x80)
-    {
-      fprintf (fp, "[YM2612] [0x2a]:0 <- data bank, then wait %d samples\n",
-               (command->command & 0x0f));
-      return 0;
-    }
-  if (command->command == 0x4f)
-    {
-      fprintf (fp, "[Game Gear PCM] :6 <- %#04x\n",
-               command->data[0]);
-      return 0;
-    }
-  if (command->command == 0x50)
-    {
-      fprintf (fp, "[PSG] <- %#04x\n", command->data[0]);
-      return 0;
-    }
-  if (command->command >= 0x30 && command->command <= 0x3f)
-    {
-      fprintf (fp, "[reserved]\n");
-      return 0;
-    }
+    case cmd_type_none:
+      snprintf(str, sizeof(str), "%s", elem->short_desc);
+      break;
+    case cmd_type_nibble:
+      snprintf(str, sizeof(str), elem->short_desc,
+	       (command->command & 0x0f));
+      break;
+    case cmd_type_byte:
+      snprintf(str, sizeof(str), elem->short_desc,
+	       parse_uchar(command->data, 0, command->size));
+      break;
+    case cmd_type_byte_byte:
+      snprintf(str, sizeof(str), elem->short_desc,
+	       parse_uchar(command->data, 0, command->size),
+	       parse_uchar(command->data, 1, command->size));
+      break;
+    case cmd_type_short:
+      snprintf(str, sizeof(str), elem->short_desc,
+	       parse_ushort(command->data, 0, command->size));
+      break;
+    case cmd_type_short_byte:
+      snprintf(str, sizeof(str), elem->short_desc,
+	       parse_ushort(command->data, 0, command->size),
+	       parse_uchar(command->data, 2, command->size));
+      break;
+    case cmd_type_byte_byte_byte:
+      snprintf(str, sizeof(str), elem->short_desc,
+	       parse_uchar(command->data, 0, command->size),
+	       parse_uchar(command->data, 1, command->size),
+	       parse_uchar(command->data, 2, command->size));
+      break;
+    case cmd_type_short_short:
+      snprintf(str, sizeof(str), elem->short_desc,
+	       parse_ushort(command->data, 0, command->size),
+	       parse_ushort(command->data, 2, command->size));
+      break;
+    case cmd_type_int:
+      snprintf(str, sizeof(str), elem->short_desc,
+	       parse_uint(command->data, 0, command->size));
+      break;
+    case cmd_type_data_block:
+      {
+	uint8_t data_type = parse_uchar(command->data, 0, command->size);
+	uint32_t data_size = parse_uint(command->data, 1, command->size);
+	snprintf(str, sizeof(str), elem->short_desc, data_type, data_size);
+	break;
+      }
+    default:
+      fprintf(stderr, "not found in lookup\n");
+      return -1;
+    };
+
+  fprintf (fp, "%s\n", str);
+  return (elem->action_type == action_type_eos) ? 1 : 0;
+
+/* // Saving for future implementation
   if (command->command == 0x54)
     {
       uint8_t data = command->data[1];
@@ -483,9 +516,9 @@ vgm_process_command (FILE *fp, VgmCommand *command)
       fprintf (fp, "[YM2151] [%#04x] <- %#04x", reg, data);
       switch (reg)
         {
-        /* case 0x01: */
-        /*   fprintf (fp, ", (TEST & LFO RESET)"); */
-        /*   break; */
+        case 0x01:
+          fprintf (fp, ", (TEST & LFO RESET)");
+          break;
         case 0x08:
           fprintf (fp, ", (KEY ON)");
           break;
@@ -538,15 +571,6 @@ vgm_process_command (FILE *fp, VgmCommand *command)
       fprintf (fp, "\n");
       return 0;
     }
-
-  if (command->command == 0x67)
-    {
-      uint8_t data_type = parse_uchar (command->data, 0, command->size);
-      uint32_t data_size = parse_uint (command->data, 1, command->size);
-      fprintf (fp, "[Data Block] Data Type %#04x, Size %#04x\n", data_type,
-               data_size);
-      return 0;
-    }
-  return -1;
+*/
 }
 

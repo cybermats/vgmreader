@@ -69,7 +69,8 @@ ParameterizedTest (struct no_args_param *params, process_commands, test_args)
 {
   cr_assert_not_null (g_mem_stream);
   VgmCommand cmd = { params->command, params->data, params->data_size };
-  cr_assert_eq (vgm_process_command (g_mem_stream, &cmd), params->ret_value);
+  int actual_ret = vgm_process_command (g_mem_stream, &cmd);
+  cr_assert_eq (actual_ret, params->ret_value);
   fflush (g_mem_stream);
   cr_expect_str_eq (membuffer, params->expected);
 }
