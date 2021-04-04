@@ -260,10 +260,12 @@ enum cmd_type_t
     cmd_type_nibble,
     cmd_type_byte,
     cmd_type_byte_byte,
-    cmd_type_short_byte,
     cmd_type_short,
-    cmd_type_data_block,
+    cmd_type_short_byte,
+    cmd_type_byte_byte_byte,
+    cmd_type_short_short,
     cmd_type_int,
+    cmd_type_data_block,
   };
 
 enum action_type_t
@@ -287,6 +289,7 @@ enum action_type_t
     action_type_data_block,
     action_type_eos,
     action_type_sega_pcm,
+    action_type_c352,
   };
 
 struct command_info_t
@@ -333,9 +336,19 @@ struct command_info_t command_info[] =
 
     { 0x80, cmd_type_nibble, action_type_ym2612, "[0x2a]:0 <- data bank, then wait %d samples" },
 
+    { 0xa1, cmd_type_byte_byte, action_type_reserved, "reserved" },
+
+    
     { 0xc0, cmd_type_short_byte, action_type_sega_pcm, "[%#06x] <- %#04x" },
 
+    { 0xc9, cmd_type_byte_byte_byte, action_type_reserved, "reserved" },
+    { 0xd7, cmd_type_byte_byte_byte, action_type_reserved, "reserved" },
+
+    
     { 0xe0, cmd_type_int, action_type_ym2612, "Seek to offset [%#010x] in PCM Data bank" },
+    { 0xe1, cmd_type_short_short, action_type_c352, "[%#06x] <- %#06x" },
+
+    { 0xe2, cmd_type_int, action_type_reserved, "reserved" },
     
   };
 
@@ -346,6 +359,22 @@ static int command_info_compare(const void *key, const void *member)
   return k - m;
 }
 
+static uint8_t reduce_command(uint8_t cmd) {
+  if ((0x30 <= cmd && 0x4f > cmd) ||
+      (0x70 <= cmd && 0x90 > cmd))
+    return cmd & 0xf0;
+  if (0xa1 <= cmd && 0xb0 > cmd)
+    return 0xa1;
+  if (0xc9 <= cmd && 0xd0 > cmd)
+    return 0xc9;
+  if (0xd7 <= cmd && 0xe0 > cmd)
+    return 0xd7;
+  if (0xe2 <= cmd && 0xff >= cmd)
+    return 0xe2;
+  return cmd;
+}
+
+
 size_t
 vgm_next_command (const Vgm *vgm, size_t offset, VgmCommand *command)
 {
@@ -354,21 +383,13 @@ vgm_next_command (const Vgm *vgm, size_t offset, VgmCommand *command)
   assert (command);
   uint8_t c = vgm->buffer[offset];
   command->command = c;
+  uint8_t lookup_cmd = reduce_command(c);
 
-  struct command_info_t* elem = bsearch(&c,
+  struct command_info_t* elem = bsearch(&lookup_cmd,
 					command_info,
 					sizeof(command_info) / sizeof(struct command_info_t),
 					sizeof(struct command_info_t),
 					command_info_compare);
-  if (NULL == elem)
-    {
-      c = c & 0xf0;
-      elem =  bsearch(&c,
-		      command_info,
-		      sizeof(command_info) / sizeof(struct command_info_t),
-		      sizeof(struct command_info_t),
-		      command_info_compare);
-    }
   if (NULL == elem)
     {
       return 0;
@@ -388,8 +409,13 @@ vgm_next_command (const Vgm *vgm, size_t offset, VgmCommand *command)
       command->data = vgm->buffer + offset + 1;
       return offset + 3;
     case cmd_type_short_byte:
+    case cmd_type_byte_byte_byte:
       command->data = vgm->buffer + offset + 1;
       return offset + 4;
+    case cmd_type_short_short:
+    case cmd_type_int:
+      command->data = vgm->buffer + offset + 1;
+      return offset + 5;
     case cmd_type_data_block:
       {
 	command->data = vgm->buffer + offset + 7;
@@ -397,20 +423,10 @@ vgm_next_command (const Vgm *vgm, size_t offset, VgmCommand *command)
 	command->size = vgm->size - (offset + 7);
 	return offset + 7 + data_size;
       }
-    case cmd_type_int:
-      command->data = vgm->buffer + offset + 1;
-      return offset + 5;
     default:
       fprintf(stderr, "not found in lookup\n");
       return 0;
     };
-
-  // Four byte argument
-  if (c >= 0xe0 && c <= 0xff)
-    {
-      command->data = vgm->buffer + offset + 1;
-      return offset + 5;
-    }
 
   return 0;
 }

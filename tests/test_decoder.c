@@ -1,4 +1,5 @@
 #include <criterion/criterion.h>
+#include <signal.h>
 
 #include "decode.h"
 

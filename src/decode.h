@@ -3,6 +3,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdint.h>
 
 #define VGM_FT_UNKNOWN 0
 #define VGM_FT_VGM 1
