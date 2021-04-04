@@ -446,7 +446,7 @@ vgm_process_command (FILE *fp, VgmCommand *command)
     }
   if (command->command == 0x66)
     {
-      fprintf (fp, "End of sound data\n");
+      fprintf (fp, "[EOS] End of sound data\n");
       return 1;
     }
   if ((command->command & 0xf0) == 0x70)
@@ -456,19 +456,19 @@ vgm_process_command (FILE *fp, VgmCommand *command)
     }
   if ((command->command & 0xf0) == 0x80)
     {
-      fprintf (fp, "[YM2612] port 0 address 2A, wait samples: %d\n",
+      fprintf (fp, "[YM2612] [0x2a]:0 <- data bank, then wait %d samples\n",
                (command->command & 0x0f));
       return 0;
     }
   if (command->command == 0x4f)
     {
-      fprintf (fp, "[Game Gear PCM] Write %#04x to port 0x06\n",
+      fprintf (fp, "[Game Gear PCM] :6 <- %#04x\n",
                command->data[0]);
       return 0;
     }
   if (command->command == 0x50)
     {
-      fprintf (fp, "[PSG] Write %#04x\n", command->data[0]);
+      fprintf (fp, "[PSG] <- %#04x\n", command->data[0]);
       return 0;
     }
   if (command->command >= 0x30 && command->command <= 0x3f)
@@ -480,7 +480,7 @@ vgm_process_command (FILE *fp, VgmCommand *command)
     {
       uint8_t data = command->data[1];
       uint8_t reg = command->data[0];
-      fprintf (fp, "[YM2151] Write %#04x to reg %#04x", data, reg);
+      fprintf (fp, "[YM2151] [%#04x] <- %#04x", reg, data);
       switch (reg)
         {
         /* case 0x01: */
