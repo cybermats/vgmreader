@@ -40,7 +40,7 @@ TESTS = criterion_tests
 
 .PHONY: format
 format:
-	clang-format -i $(CFILES) $(HFILES)
+	clang-format --style=Google -i $(CFILES) $(HFILES)
 
 .PHONY: check-syntax
 check-syntax:
