@@ -79,13 +79,13 @@ typedef enum {
 
 } VgmCpu;
 
-Vgm *vgm_create(const unsigned char *buffer, size_t offset, size_t size);
+Vgm *vgm_create(const unsigned char *buffer, size_t start_offset, size_t buffer_size);
 void vgm_free(Vgm *vgm);
-size_t vgm_get_tags(const Vgm *vgm, char *dst, size_t size);
+size_t vgm_get_tags(char *dst, size_t n, const Vgm *vgm);
 
 uint32_t vgm_get_attr(const Vgm *vgm, int attribute);
 
-size_t vgm_next_command(const Vgm *vgm, size_t offset, VgmCommand *command);
+size_t vgm_next_command(VgmCommand *cmd, const Vgm *vgm, size_t offset);
 
 VgmCpu vgm_get_command_cpu(const VgmCommand *command);
 

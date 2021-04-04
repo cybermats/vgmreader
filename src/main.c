@@ -45,7 +45,7 @@ main (int argc, char *argv[])
 
   char tags[1024];
   tags[0] = 0;
-  vgm_get_tags (vgm, tags, 1024);
+  vgm_get_tags (tags, sizeof(tags), vgm);
   printf ("Tags: [%s], ", tags);
 
   uint32_t total_num_samples = vgm_get_attr(vgm, VGM_TOTAL_NUM_SAMPLES);
@@ -61,7 +61,7 @@ main (int argc, char *argv[])
   while (offset)
     {
       VgmCommand cmd;
-      offset = vgm_next_command(vgm, offset, &cmd);
+      offset = vgm_next_command(&cmd, vgm, offset);
       vgm_process_command(stdout, &cmd);      
     }
 

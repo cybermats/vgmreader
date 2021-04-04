@@ -6,13 +6,13 @@
 
 #include "vgm_helper.h"
 
-Vgm *vgm_create(const unsigned char *buffer, size_t offset, size_t size) {
-  const size_t header_size = size - offset;
+Vgm *vgm_create(const unsigned char *buffer, size_t start_offset, size_t buffer_size) {
+  const size_t header_size = buffer_size - start_offset;
   if (header_size < 256) return NULL;
   Vgm *vgm;
   vgm = malloc(sizeof(Vgm));
   vgm->buffer = buffer;
-  vgm->size = size;
+  vgm->size = buffer_size;
   return vgm;
 }
 
@@ -21,116 +21,113 @@ void vgm_free(Vgm *vgm) {
   return;
 }
 
-size_t vgm_get_tags(const Vgm *vgm, char *dst, size_t size) {
+struct attr_name_t {
+  int id;
+  char name[32];
+};
+
+
+static int attr_info_compare(const void *key, const void *member) {
+  int k = *((int *)key);
+  int m = ((struct attr_name_t *)member)->id;
+  return k - m;
+}
+
+char *get_attr_name(int attr) {
+  
+  static struct attr_name_t attribs[] = {
+    { VGM_SN76489, "sn76489" },
+    { VGM_EOF, "eof" },
+    { VGM_VERSION, "version" },
+    { VGM_SN76489, "sn76489" },
+    { VGM_YM2413, "ym2413" },
+    { VGM_GD3_OFFSET, "GD3 offset" },
+    { VGM_TOTAL_NUM_SAMPLES, "total num samples" },
+    { VGM_LOOP_OFFSET, "loop offset" },
+    { VGM_LOOP_NUM_SAMPLES, "loop num samples" },
+    { VGM_RATE, "rate" },
+    { VGM_SN76489_FEEDBACK, "sn76489 feedback" },
+    { VGM_SN76489_SHIFT_REG_WIDTH, "sn76489 shift register width" },
+    { VGM_SN76489_FLAGS, "sn76489 flags" },
+    { VGM_YM2612, "ym2612" },
+    { VGM_YM2151, "ym2151" },
+    { VGM_DATA_OFFSET, "data offset" },
+    { VGM_SEGA_PCM, "SEGA PCM" },
+    { VGM_SEGA_PCM_INTERFACE_REG, "SEGA PCM interface reg" },
+    { VGM_RF5C68, "rf5c68" },
+    { VGM_YM2203, "ym2203" },
+    { VGM_YM2608, "ym2608" },
+    { VGM_YM2610, "ym2610" },
+    { VGM_YM3812, "ym3812" },
+    { VGM_YM3526, "ym3526" },
+    { VGM_Y8950, "y8950" },
+    { VGM_YMF262, "ymf262" },
+    { VGM_YMF278B, "ymf278b" },
+    { VGM_YMF271, "ymf271" },
+    { VGM_YMZ280B, "ymz280b" },
+    { VGM_RF5C164, "rf5c164" },
+    { VGM_PWM, "PWM" },
+    { VGM_AY8910, "ay8910" },
+    { VGM_AY8910_CHIP_TYPE, "ay8910 chip type" },
+    { VGM_AY8910_FLAGS, "ay8910 flags" },
+    { VGM_YM2203_FLAGS, "ym2203 flags" },
+    { VGM_YM2608_FLAGS, "ym2608 flags" },
+    { VGM_LOOP_MODIFIER, "loop modifier" },
+  };
+
+  struct attr_name_t *elem =
+      bsearch(&attr, attribs,
+              sizeof(attribs) / sizeof(attribs[0]),
+              sizeof(attribs[0]),
+              attr_info_compare);
+  if (NULL == elem)
+    return NULL;
+  return elem->name;
+}
+
+size_t get_single_tag(char *dst, size_t n, const Vgm *vgm, int attr, size_t count) {
+  uint32_t val;
+  if ((val = vgm_get_attr(vgm, attr))) {
+    if (count++) strncat(dst, ", ", n);
+    const char *name = get_attr_name(attr);
+    assert(name);
+    char str[128];
+    snprintf(str, sizeof(str), "%s(%d)", name, val);
+    strncat(dst, str, n);
+  }
+  return count;
+}
+
+size_t vgm_get_tags(char *dst, size_t n, const Vgm *vgm) {
   int count = 0;
-  uint32_t attr = 0;
-  char str[128];
-  if ((attr = vgm_get_attr(vgm, VGM_SN76489))) {
-    if (count++) strncat(dst, ", ", size);
-    strncat(dst, "sn76489", size);
-    snprintf(str, sizeof(str), "sn76489(%d)", attr);
-    strncat(dst, str, size);
+  static int tag_attrs[] = {
+    VGM_SN76489,
+    VGM_YM2413,
+    VGM_YM2612,
+    VGM_YM2151,
+    VGM_SEGA_PCM,
+    VGM_RF5C68,
+    VGM_YM2203,
+    VGM_YM2608,
+    VGM_YM2610,
+    VGM_YM3812,
+    VGM_YM3526,
+    VGM_Y8950,
+    VGM_YMF262,
+    VGM_YMF278B,
+    VGM_YMF271,
+    VGM_YMZ280B,
+    VGM_RF5C164,
+    VGM_PWM,
+    VGM_AY8910,
+    VGM_YM2203,
+    VGM_YM2608,
+  };
+
+  for (size_t i = 0; i < (sizeof(tag_attrs)/sizeof(tag_attrs[0])); ++i) {
+    count = get_single_tag(dst, n, vgm, tag_attrs[i], count);
   }
-  if ((attr = vgm_get_attr(vgm, VGM_YM2413))) {
-    if ((count++)) strncat(dst, ", ", size);
-    snprintf(str, sizeof(str), "ym2413(%d)", attr);
-    strncat(dst, str, size);
-  }
-  if ((attr = vgm_get_attr(vgm, VGM_YM2612))) {
-    if ((count++)) strncat(dst, ", ", size);
-    snprintf(str, sizeof(str), "ym2612(%d)", attr);
-    strncat(dst, str, size);
-  }
-  if ((attr = vgm_get_attr(vgm, VGM_YM2151))) {
-    if ((count++)) strncat(dst, ", ", size);
-    snprintf(str, sizeof(str), "ym2151(%d)", attr);
-    strncat(dst, str, size);
-  }
-  if ((attr = vgm_get_attr(vgm, VGM_SEGA_PCM))) {
-    if ((count++)) strncat(dst, ", ", size);
-    snprintf(str, sizeof(str), "segaPCM(%d)", attr);
-    strncat(dst, str, size);
-  }
-  if ((attr = vgm_get_attr(vgm, VGM_RF5C68))) {
-    if ((count++)) strncat(dst, ", ", size);
-    snprintf(str, sizeof(str), "rf5c68(%d)", attr);
-    strncat(dst, str, size);
-  }
-  if ((attr = vgm_get_attr(vgm, VGM_YM2203))) {
-    if ((count++)) strncat(dst, ", ", size);
-    snprintf(str, sizeof(str), "ym2203(%d)", attr);
-    strncat(dst, str, size);
-  }
-  if ((attr = vgm_get_attr(vgm, VGM_YM2608))) {
-    if ((count++)) strncat(dst, ", ", size);
-    snprintf(str, sizeof(str), "ym2608(%d)", attr);
-    strncat(dst, str, size);
-  }
-  if ((attr = vgm_get_attr(vgm, VGM_YM2610))) {
-    if ((count++)) strncat(dst, ", ", size);
-    snprintf(str, sizeof(str), "ym2610(%d)", attr);
-    strncat(dst, str, size);
-  }
-  if ((attr = vgm_get_attr(vgm, VGM_YM3812))) {
-    if ((count++)) strncat(dst, ", ", size);
-    snprintf(str, sizeof(str), "ym3812(%d)", attr);
-    strncat(dst, str, size);
-  }
-  if ((attr = vgm_get_attr(vgm, VGM_YM3526))) {
-    if ((count++)) strncat(dst, ", ", size);
-    snprintf(str, sizeof(str), "ym3526(%d)", attr);
-    strncat(dst, str, size);
-  }
-  if ((attr = vgm_get_attr(vgm, VGM_Y8950))) {
-    if ((count++)) strncat(dst, ", ", size);
-    snprintf(str, sizeof(str), "y8950(%d)", attr);
-    strncat(dst, str, size);
-  }
-  if ((attr = vgm_get_attr(vgm, VGM_YMF262))) {
-    if ((count++)) strncat(dst, ", ", size);
-    snprintf(str, sizeof(str), "ymf262(%d)", attr);
-    strncat(dst, str, size);
-  }
-  if ((attr = vgm_get_attr(vgm, VGM_YMF278B))) {
-    if ((count++)) strncat(dst, ", ", size);
-    snprintf(str, sizeof(str), "ymf278b(%d)", attr);
-    strncat(dst, str, size);
-  }
-  if ((attr = vgm_get_attr(vgm, VGM_YMF271))) {
-    if ((count++)) strncat(dst, ", ", size);
-    snprintf(str, sizeof(str), "ymf271(%d)", attr);
-    strncat(dst, str, size);
-  }
-  if ((attr = vgm_get_attr(vgm, VGM_YMZ280B))) {
-    if ((count++)) strncat(dst, ", ", size);
-    snprintf(str, sizeof(str), "ymz280b(%d)", attr);
-    strncat(dst, str, size);
-  }
-  if ((attr = vgm_get_attr(vgm, VGM_RF5C164))) {
-    if ((count++)) strncat(dst, ", ", size);
-    snprintf(str, sizeof(str), "rf5c164(%d)", attr);
-    strncat(dst, str, size);
-  }
-  if ((attr = vgm_get_attr(vgm, VGM_PWM))) {
-    if ((count++)) strncat(dst, ", ", size);
-    snprintf(str, sizeof(str), "pwm(%d)", attr);
-    strncat(dst, str, size);
-  }
-  if ((attr = vgm_get_attr(vgm, VGM_AY8910))) {
-    if ((count++)) strncat(dst, ", ", size);
-    snprintf(str, sizeof(str), "ay8910(%d)", attr);
-    strncat(dst, str, size);
-  }
-  if ((attr = vgm_get_attr(vgm, VGM_YM2203))) {
-    if ((count++)) strncat(dst, ", ", size);
-    snprintf(str, sizeof(str), "ym2203(%d)", attr);
-    strncat(dst, str, size);
-  }
-  if ((attr = vgm_get_attr(vgm, VGM_YM2608))) {
-    if ((count++)) strncat(dst, ", ", size);
-    snprintf(str, sizeof(str), "ym2608(%d)", attr);
-    strncat(dst, str, size);
-  }
+
   return 0;
 }
 
@@ -140,6 +137,8 @@ unsigned int vgm_get_attr(const Vgm *vgm, int attribute) {
     return version;
   }
 
+  // Handle default values of attributes
+  
   if (version < 101) {
     if (attribute == VGM_RATE) return 0;
   }
@@ -167,6 +166,8 @@ unsigned int vgm_get_attr(const Vgm *vgm, int attribute) {
       return 0x0;
   }
 
+  // Handle special cases for attributes (i.e. shorts, chars and bcd)
+  
   switch (attribute) {
     case VGM_SN76489_FEEDBACK:
       return parse_ushort(vgm->buffer, attribute, vgm->size);
@@ -180,7 +181,7 @@ unsigned int vgm_get_attr(const Vgm *vgm, int attribute) {
       return parse_uchar(vgm->buffer, attribute, vgm->size);
     case VGM_VERSION:
       return parse_bcd(vgm->buffer, attribute, vgm->size);
-    default:
+    default: // Handle default case which is int.
       return parse_uint(vgm->buffer, attribute, vgm->size);
   }
 }
@@ -304,12 +305,12 @@ static uint8_t reduce_command(uint8_t cmd) {
   return cmd;
 }
 
-size_t vgm_next_command(const Vgm *vgm, size_t offset, VgmCommand *command) {
+size_t vgm_next_command(VgmCommand *cmd, const Vgm *vgm, size_t offset) {
   assert(vgm);
   assert(vgm->buffer);
-  assert(command);
+  assert(cmd);
   uint8_t c = vgm->buffer[offset];
-  command->command = c;
+  cmd->command = c;
   uint8_t lookup_cmd = reduce_command(c);
 
   struct command_info_t *elem =
@@ -323,32 +324,32 @@ size_t vgm_next_command(const Vgm *vgm, size_t offset, VgmCommand *command) {
   switch (elem->cmd_type) {
     case cmd_type_none:
     case cmd_type_nibble:
-      command->data = NULL;
-      command->size = 0;
+      cmd->data = NULL;
+      cmd->size = 0;
       return offset + 1;
     case cmd_type_byte:
-      command->data = vgm->buffer + offset + 1;
-      command->size = 1;
+      cmd->data = vgm->buffer + offset + 1;
+      cmd->size = 1;
       return offset + 2;
     case cmd_type_byte_byte:
     case cmd_type_short:
-      command->data = vgm->buffer + offset + 1;
-      command->size = 2;
+      cmd->data = vgm->buffer + offset + 1;
+      cmd->size = 2;
       return offset + 3;
     case cmd_type_short_byte:
     case cmd_type_byte_byte_byte:
-      command->data = vgm->buffer + offset + 1;
-      command->size = 3;
+      cmd->data = vgm->buffer + offset + 1;
+      cmd->size = 3;
       return offset + 4;
     case cmd_type_short_short:
     case cmd_type_int:
-      command->data = vgm->buffer + offset + 1;
-      command->size = 4;
+      cmd->data = vgm->buffer + offset + 1;
+      cmd->size = 4;
       return offset + 5;
     case cmd_type_data_block: {
-      command->data = vgm->buffer + offset + 2;
+      cmd->data = vgm->buffer + offset + 2;
       uint32_t data_size = parse_uint(vgm->buffer, offset + 3, vgm->size);
-      command->size = vgm->size - (offset + 2);
+      cmd->size = vgm->size - (offset + 2);
       return offset + 7 + data_size;
     }
     default:
