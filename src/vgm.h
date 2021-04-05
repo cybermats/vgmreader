@@ -59,6 +59,43 @@
 // Version 1.51
 #define VGM_LOOP_MODIFIER 0x7f  // 8 bits
 
+enum cmd_type_t {
+  cmd_type_none = 0,
+  cmd_type_nibble,
+  cmd_type_nibble_inc,
+  cmd_type_byte,
+  cmd_type_byte_byte,
+  cmd_type_short,
+  cmd_type_short_byte,
+  cmd_type_byte_byte_byte,
+  cmd_type_short_short,
+  cmd_type_int,
+  cmd_type_data_block,
+};
+
+enum action_type_t {
+  action_type_none = 0,
+  action_type_wait,
+  action_type_game_gear_pcm,
+  action_type_psg,
+  action_type_ym2413,
+  action_type_ym2612,
+  action_type_ym2151,
+  action_type_ym2203,
+  action_type_ym2608,
+  action_type_ym2610,
+  action_type_ym3812,
+  action_type_ym3526,
+  action_type_y8950,
+  action_type_ymz280b,
+  action_type_ymf262,
+  action_type_reserved,
+  action_type_data_block,
+  action_type_eos,
+  action_type_sega_pcm,
+  action_type_c352,
+};
+
 struct vgm_t {
   const uint8_t *buffer;
   size_t size;
@@ -66,22 +103,28 @@ struct vgm_t {
 
 struct vgm_command_t {
   uint8_t command;
+  enum cmd_type_t cmd_type;
+  enum action_type_t action;
   const uint8_t *data;
   size_t size;
 };
 
-struct vgm_t *vgm_create(const unsigned char *buffer, size_t start_offset,
+struct vgm_t *vgm_create(const unsigned char *buffer,
+			 size_t start_offset,
                          size_t buffer_size);
 void vgm_free(struct vgm_t *vgm);
 size_t vgm_get_tags(char *dst, size_t n, const struct vgm_t *vgm);
 
 uint32_t vgm_get_attr(const struct vgm_t *vgm, int attribute);
 
-size_t vgm_next_command(struct vgm_command_t *cmd, const struct vgm_t *vgm,
-                        size_t offset);
+size_t vgm_next_command(struct vgm_command_t *cmd,
+			const struct vgm_t *vgm,
+			size_t offset);
 
-int vgm_process_command(FILE *fp, struct vgm_command_t *command);
-
+int vgm_process_command(FILE *fp,
+			const struct vgm_command_t *cmd);
+int vgm_cmd_to_string(char *str, size_t size,
+		      const struct vgm_command_t *cmd);
 int vgm_validate_buffer(const uint8_t *buffer, size_t size);
 
 #endif

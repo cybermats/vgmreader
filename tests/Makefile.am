@@ -29,7 +29,8 @@ CFILES = \
 	test_header.c \
 	test_decoder.c \
 	test_commands.c \
-	test_process_commands.c
+	test_process_commands.c \
+	test_to_string_cmd.c
 
 check_PROGRAMS = criterion_tests
 criterion_tests_SOURCES = $(CFILES) $(C_SRCFILES) $(H_SRCFILES)

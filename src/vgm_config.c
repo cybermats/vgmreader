@@ -3,17 +3,17 @@
 #include "vgm.h"
 
 const struct command_info_t command_info[] = {
-    {0x30, cmd_type_byte, action_type_reserved, "[reserved]"},
-    {0x40, cmd_type_byte_byte, action_type_reserved, "[reserved]"},
+    {0x30, cmd_type_byte, action_type_reserved, ""},
+    {0x40, cmd_type_byte_byte, action_type_reserved, ""},
 
     {0x4f, cmd_type_byte, action_type_game_gear_pcm,
-     "[Game Gear PCM] :6 <- %#04x"},
-    {0x50, cmd_type_byte, action_type_psg, "[PSG] <- %#04x"},
+     ":6 <- %#04x"},
+    {0x50, cmd_type_byte, action_type_psg, ": <- %#04x"},
 
     {0x51, cmd_type_byte_byte, action_type_ym2413, "[%#04x] <- %#04x"},
     {0x52, cmd_type_byte_byte, action_type_ym2612, "[%#04x]:0 <- %#04x"},
     {0x53, cmd_type_byte_byte, action_type_ym2612, "[%#04x]:1 <- %#04x"},
-    {0x54, cmd_type_byte_byte, action_type_ym2151, "[YM2151] [%#04x] <- %#04x"},
+    {0x54, cmd_type_byte_byte, action_type_ym2151, "[%#04x] <- %#04x"},
     {0x55, cmd_type_byte_byte, action_type_ym2203, "[%#04x] <- %#04x"},
     {0x56, cmd_type_byte_byte, action_type_ym2608, "[%#04x]:0 <- %#04x"},
     {0x57, cmd_type_byte_byte, action_type_ym2608, "[%#04x]:1 <- %#04x"},
@@ -26,33 +26,33 @@ const struct command_info_t command_info[] = {
     {0x5e, cmd_type_byte_byte, action_type_ymf262, "[%#04x]:0 <- %#04x"},
     {0x5f, cmd_type_byte_byte, action_type_ymf262, "[%#04x]:1 <- %#04x"},
 
-    {0x61, cmd_type_short, action_type_wait, "[Wait] Samples: %d"},
-    {0x62, cmd_type_none, action_type_wait, "[Wait] One frame (60Hz)"},
-    {0x63, cmd_type_none, action_type_wait, "[Wait] One frame (50Hz)"},
+    {0x61, cmd_type_short, action_type_wait, "Samples: %d"},
+    {0x62, cmd_type_none, action_type_wait, "One frame (60Hz)"},
+    {0x63, cmd_type_none, action_type_wait, "One frame (50Hz)"},
 
-    {0x66, cmd_type_none, action_type_eos, "[EOS] End of sound data"},
+    {0x66, cmd_type_none, action_type_eos, "End of sound data"},
 
     {0x67, cmd_type_data_block, action_type_data_block,
-     "[Data Block] Data Type %#04x, Size %#04x"},
+     "Data Type %#04x, Size %#04x"},
 
     // TODO: Fix nibble+1 for Wait
-    {0x70, cmd_type_nibble_inc, action_type_wait, "[Wait] Samples: %d"},
+    {0x70, cmd_type_nibble_inc, action_type_wait, "Samples: %d"},
 
     {0x80, cmd_type_nibble, action_type_ym2612,
-     "[YM2612] [0x2a]:0 <- data bank, then wait %d samples"},
+     "[0x2a]:0 <- data bank, then wait %d samples"},
 
-    {0xa1, cmd_type_byte_byte, action_type_reserved, "[reserved]"},
+    {0xa1, cmd_type_byte_byte, action_type_reserved, ""},
 
     {0xc0, cmd_type_short_byte, action_type_sega_pcm, "[%#06x] <- %#04x"},
 
-    {0xc9, cmd_type_byte_byte_byte, action_type_reserved, "[reserved]"},
-    {0xd7, cmd_type_byte_byte_byte, action_type_reserved, "[reserved]"},
+    {0xc9, cmd_type_byte_byte_byte, action_type_reserved, ""},
+    {0xd7, cmd_type_byte_byte_byte, action_type_reserved, ""},
 
     {0xe0, cmd_type_int, action_type_ym2612,
      "Seek to offset [%#010x] in PCM Data bank"},
     {0xe1, cmd_type_short_short, action_type_c352, "[%#06x] <- %#06x"},
 
-    {0xe2, cmd_type_int, action_type_reserved, "reserved"},
+    {0xe2, cmd_type_int, action_type_reserved, ""},
 
 };
 
@@ -99,3 +99,28 @@ const struct attr_name_t attribs[] = {
 };
 
 const size_t attribs_size = sizeof attribs / sizeof *attribs;
+
+const struct action_info_t action_info[] = {
+  {action_type_none,         "None",              },
+  {action_type_wait,	     "Wait",	     	   },
+  {action_type_game_gear_pcm,"Game Gear PCM",     },
+  {action_type_psg,	     "PSG",	     	   },
+  {action_type_ym2413,	     "YM2413",	     	   },
+  {action_type_ym2612,	     "YM2612",	     	   },
+  {action_type_ym2151,	     "YM2151",	     	   },
+  {action_type_ym2203,	     "YM2203",	     	   },
+  {action_type_ym2608,	     "YM2608",	     	   },
+  {action_type_ym2610,	     "YM2610",	     	   },
+  {action_type_ym3812,	     "YM3812",	     	   },
+  {action_type_ym3526,	     "YM3526",	     	   },
+  {action_type_y8950,	     "Y8950",	     	   },
+  {action_type_ymz280b,	     "YMZ280B",	     	   },
+  {action_type_ymf262,	     "YMF262",	     	   },
+  {action_type_reserved,     "Reserved",   },	     
+  {action_type_data_block,   "Data Block",    	   },
+  {action_type_eos,	     "EOS",	     	   },
+  {action_type_sega_pcm,     "SEGA PCM",   },	     
+  {action_type_c352,	     "C352",	     	   },
+};
+
+const size_t action_info_size = sizeof action_info / sizeof *action_info;

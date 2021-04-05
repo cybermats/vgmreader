@@ -107,16 +107,19 @@ size_t vgm_next_command(struct vgm_command_t *cmd, const struct vgm_t *vgm,
   assert(vgm->buffer);
   assert(cmd);
   uint8_t c = vgm->buffer[offset];
-  cmd->command = c;
   uint8_t lookup_cmd = reduce_command(c);
 
   struct command_info_t *elem =
       bsearch(&lookup_cmd, command_info, command_info_size,
               sizeof(struct command_info_t), command_info_compare);
-  if (NULL == elem) {
+  
+  if (!elem)
     return 0;
-  }
 
+  cmd->command = c;
+  cmd->cmd_type = elem->cmd_type;
+  cmd->action = elem->action_type;
+  
   switch (elem->cmd_type) {
     case cmd_type_none:
     case cmd_type_nibble:
@@ -149,80 +152,47 @@ size_t vgm_next_command(struct vgm_command_t *cmd, const struct vgm_t *vgm,
       cmd->size = vgm->size - (offset + 2);
       return offset + 7 + data_size;
     }
-    default:
-      fprintf(stderr, "not found in lookup\n");
-      return 0;
   };
 
+  fprintf(stderr, "not found in lookup\n");
   return 0;
 }
 
-int vgm_process_command(FILE *fp, struct vgm_command_t *command) {
-  uint8_t lookup_cmd = reduce_command(command->command);
-
-  struct command_info_t *elem =
-      bsearch(&lookup_cmd, command_info, command_info_size,
-              sizeof(struct command_info_t), command_info_compare);
-  if (NULL == elem) return 0;
-
+int vgm_process_command(FILE *fp, const struct vgm_command_t *cmd) {
   char str[1024];
-  switch (elem->cmd_type) {
-    case cmd_type_none:
-      snprintf(str, sizeof(str), "%s", elem->short_desc);
-      break;
-    case cmd_type_nibble:
-      snprintf(str, sizeof(str), elem->short_desc, (command->command & 0x0f));
-      break;
-    case cmd_type_nibble_inc:
-      snprintf(str, sizeof(str), elem->short_desc,
-               (command->command & 0x0f) + 1);
-      break;
-    case cmd_type_byte:
-      snprintf(str, sizeof(str), elem->short_desc,
-               parse_uchar(command->data, 0, command->size));
-      break;
-    case cmd_type_byte_byte:
-      snprintf(str, sizeof(str), elem->short_desc,
-               parse_uchar(command->data, 0, command->size),
-               parse_uchar(command->data, 1, command->size));
-      break;
-    case cmd_type_short:
-      snprintf(str, sizeof(str), elem->short_desc,
-               parse_ushort(command->data, 0, command->size));
-      break;
-    case cmd_type_short_byte:
-      snprintf(str, sizeof(str), elem->short_desc,
-               parse_ushort(command->data, 0, command->size),
-               parse_uchar(command->data, 2, command->size));
-      break;
-    case cmd_type_byte_byte_byte:
-      snprintf(str, sizeof(str), elem->short_desc,
-               parse_uchar(command->data, 0, command->size),
-               parse_uchar(command->data, 1, command->size),
-               parse_uchar(command->data, 2, command->size));
-      break;
-    case cmd_type_short_short:
-      snprintf(str, sizeof(str), elem->short_desc,
-               parse_ushort(command->data, 0, command->size),
-               parse_ushort(command->data, 2, command->size));
-      break;
-    case cmd_type_int:
-      snprintf(str, sizeof(str), elem->short_desc,
-               parse_uint(command->data, 0, command->size));
-      break;
-    case cmd_type_data_block: {
-      uint8_t data_type = parse_uchar(command->data, 0, command->size);
-      uint32_t data_size = parse_uint(command->data, 1, command->size);
-      snprintf(str, sizeof(str), elem->short_desc, data_type, data_size);
-      break;
-    }
-    default:
-      fprintf(stderr, "not found in lookup\n");
-      return -1;
-  };
-
+  int res = vgm_cmd_to_string(str, sizeof str, cmd);
   fprintf(fp, "%s\n", str);
-  return (elem->action_type == action_type_eos) ? 1 : 0;
+  return res;
+}
+
+int vgm_cmd_to_string(char *str, size_t size,
+                      const struct vgm_command_t *cmd) {
+  
+
+  const char *action = get_action_name(cmd->action);
+  char short_desc[1024];
+  get_cmd_desc(short_desc, sizeof short_desc, cmd);
+
+  int action_len = snprintf(str, size, "[%s]", action);
+  if (action_len > (int)size) {
+    return -1;
+  }
+  if (action_len < 0) {
+    return -2;
+  }
+
+  size_t desc_len = strnlen(short_desc, sizeof short_desc);
+  if (desc_len == 0)
+    return 0;
+
+  if (action_len + desc_len + /* space */ 1 + /* null-term */ 1 > size) {
+    return -1;
+  }
+
+  strncat(str, " ", size);
+  strncat(str, short_desc, size);
+ 
+  return 0;
 
   /* // Saving for future implementation
     if (command->command == 0x54)
