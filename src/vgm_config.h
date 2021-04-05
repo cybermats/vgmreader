@@ -1,9 +1,8 @@
 #ifndef VGM_CONFIG_H
 #define VGM_CONFIG_H
 
-#include <stdlib.h>
 #include <stdint.h>
-
+#include <stdlib.h>
 
 enum cmd_type_t {
   cmd_type_none,
@@ -47,7 +46,6 @@ struct attr_name_t {
   char name[32];
 };
 
-
 struct command_info_t {
   uint8_t cmd;
   enum cmd_type_t cmd_type;
@@ -61,5 +59,4 @@ extern const size_t command_info_size;
 extern const struct attr_name_t attribs[];
 extern const size_t attribs_size;
 
-
-#endif // VGM_CONFIG_H
+#endif  // VGM_CONFIG_H

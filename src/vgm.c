@@ -4,10 +4,11 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "vgm_helper.h"
 #include "vgm_config.h"
+#include "vgm_helper.h"
 
-struct vgm_t *vgm_create(const unsigned char *buffer, size_t start_offset, size_t buffer_size) {
+struct vgm_t *vgm_create(const unsigned char *buffer, size_t start_offset,
+                         size_t buffer_size) {
   const size_t header_size = buffer_size - start_offset;
   if (header_size < 256) return NULL;
   struct vgm_t *vgm;
@@ -25,30 +26,14 @@ void vgm_free(struct vgm_t *vgm) {
 size_t vgm_get_tags(char *dst, size_t n, const struct vgm_t *vgm) {
   int count = 0;
   static int tag_attrs[] = {
-    VGM_SN76489,
-    VGM_YM2413,
-    VGM_YM2612,
-    VGM_YM2151,
-    VGM_SEGA_PCM,
-    VGM_RF5C68,
-    VGM_YM2203,
-    VGM_YM2608,
-    VGM_YM2610,
-    VGM_YM3812,
-    VGM_YM3526,
-    VGM_Y8950,
-    VGM_YMF262,
-    VGM_YMF278B,
-    VGM_YMF271,
-    VGM_YMZ280B,
-    VGM_RF5C164,
-    VGM_PWM,
-    VGM_AY8910,
-    VGM_YM2203,
-    VGM_YM2608,
+      VGM_SN76489, VGM_YM2413,  VGM_YM2612, VGM_YM2151,  VGM_SEGA_PCM,
+      VGM_RF5C68,  VGM_YM2203,  VGM_YM2608, VGM_YM2610,  VGM_YM3812,
+      VGM_YM3526,  VGM_Y8950,   VGM_YMF262, VGM_YMF278B, VGM_YMF271,
+      VGM_YMZ280B, VGM_RF5C164, VGM_PWM,    VGM_AY8910,  VGM_YM2203,
+      VGM_YM2608,
   };
 
-  for (size_t i = 0; i < (sizeof(tag_attrs)/sizeof(tag_attrs[0])); ++i) {
+  for (size_t i = 0; i < (sizeof(tag_attrs) / sizeof(tag_attrs[0])); ++i) {
     count = get_single_tag(dst, n, vgm, tag_attrs[i], count);
   }
 
@@ -62,7 +47,7 @@ unsigned int vgm_get_attr(const struct vgm_t *vgm, int attribute) {
   }
 
   // Handle default values of attributes
-  
+
   if (version < 101) {
     if (attribute == VGM_RATE) return 0;
   }
@@ -91,7 +76,7 @@ unsigned int vgm_get_attr(const struct vgm_t *vgm, int attribute) {
   }
 
   // Handle special cases for attributes (i.e. shorts, chars and bcd)
-  
+
   switch (attribute) {
     case VGM_SN76489_FEEDBACK:
       return parse_ushort(vgm->buffer, attribute, vgm->size);
@@ -105,7 +90,7 @@ unsigned int vgm_get_attr(const struct vgm_t *vgm, int attribute) {
       return parse_uchar(vgm->buffer, attribute, vgm->size);
     case VGM_VERSION:
       return parse_bcd(vgm->buffer, attribute, vgm->size);
-    default: // Handle default case which is int.
+    default:  // Handle default case which is int.
       return parse_uint(vgm->buffer, attribute, vgm->size);
   }
 }
@@ -116,8 +101,8 @@ int vgm_validate_buffer(const unsigned char *buffer, size_t size) {
   return 0;
 }
 
-
-size_t vgm_next_command(struct vgm_command_t *cmd, const struct vgm_t *vgm, size_t offset) {
+size_t vgm_next_command(struct vgm_command_t *cmd, const struct vgm_t *vgm,
+                        size_t offset) {
   assert(vgm);
   assert(vgm->buffer);
   assert(cmd);
@@ -126,8 +111,7 @@ size_t vgm_next_command(struct vgm_command_t *cmd, const struct vgm_t *vgm, size
   uint8_t lookup_cmd = reduce_command(c);
 
   struct command_info_t *elem =
-      bsearch(&lookup_cmd, command_info,
-              command_info_size,
+      bsearch(&lookup_cmd, command_info, command_info_size,
               sizeof(struct command_info_t), command_info_compare);
   if (NULL == elem) {
     return 0;
@@ -177,8 +161,7 @@ int vgm_process_command(FILE *fp, struct vgm_command_t *command) {
   uint8_t lookup_cmd = reduce_command(command->command);
 
   struct command_info_t *elem =
-      bsearch(&lookup_cmd, command_info,
-              command_info_size,
+      bsearch(&lookup_cmd, command_info, command_info_size,
               sizeof(struct command_info_t), command_info_compare);
   if (NULL == elem) return 0;
 
@@ -191,7 +174,8 @@ int vgm_process_command(FILE *fp, struct vgm_command_t *command) {
       snprintf(str, sizeof(str), elem->short_desc, (command->command & 0x0f));
       break;
     case cmd_type_nibble_inc:
-      snprintf(str, sizeof(str), elem->short_desc, (command->command & 0x0f) + 1);
+      snprintf(str, sizeof(str), elem->short_desc,
+               (command->command & 0x0f) + 1);
       break;
     case cmd_type_byte:
       snprintf(str, sizeof(str), elem->short_desc,
