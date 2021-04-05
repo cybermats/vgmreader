@@ -5,4 +5,3 @@
 #include <stdio.h>
 
 #include "vgm.h"
-

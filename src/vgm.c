@@ -112,14 +112,13 @@ size_t vgm_next_command(struct vgm_command_t *cmd, const struct vgm_t *vgm,
   struct command_info_t *elem =
       bsearch(&lookup_cmd, command_info, command_info_size,
               sizeof(struct command_info_t), command_info_compare);
-  
-  if (!elem)
-    return 0;
+
+  if (!elem) return 0;
 
   cmd->command = c;
   cmd->cmd_type = elem->cmd_type;
   cmd->action = elem->action_type;
-  
+
   switch (elem->cmd_type) {
     case cmd_type_none:
     case cmd_type_nibble:
@@ -165,10 +164,7 @@ int vgm_process_command(FILE *fp, const struct vgm_command_t *cmd) {
   return res;
 }
 
-int vgm_cmd_to_string(char *str, size_t size,
-                      const struct vgm_command_t *cmd) {
-  
-
+int vgm_cmd_to_string(char *str, size_t size, const struct vgm_command_t *cmd) {
   const char *action = get_action_name(cmd->action);
   char short_desc[1024];
   get_cmd_desc(short_desc, sizeof short_desc, cmd);
@@ -182,8 +178,7 @@ int vgm_cmd_to_string(char *str, size_t size,
   }
 
   size_t desc_len = strnlen(short_desc, sizeof short_desc);
-  if (desc_len == 0)
-    return 0;
+  if (desc_len == 0) return 0;
 
   if (action_len + desc_len + /* space */ 1 + /* null-term */ 1 > size) {
     return -1;
@@ -191,7 +186,7 @@ int vgm_cmd_to_string(char *str, size_t size,
 
   strncat(str, " ", size);
   strncat(str, short_desc, size);
- 
+
   return 0;
 
   /* // Saving for future implementation

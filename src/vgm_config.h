@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <stdlib.h>
+
 #include "vgm.h"
 struct attr_name_t {
   int id;

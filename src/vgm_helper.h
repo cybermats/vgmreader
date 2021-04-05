@@ -20,7 +20,6 @@ size_t get_single_tag(char *dst, size_t n, const struct vgm_t *vgm, int attr,
 int command_info_compare(const void *key, const void *member);
 uint8_t reduce_command(uint8_t cmd);
 
-
 const char *get_action_name(enum action_type_t action);
 int get_cmd_desc(char *str, size_t size, const struct vgm_command_t *cmd);
 

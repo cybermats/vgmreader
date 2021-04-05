@@ -96,28 +96,25 @@ size_t get_single_tag(char *dst, size_t n, const struct vgm_t *vgm, int attr,
 }
 
 int action_info_compare(const void *key, const void *member) {
-  enum action_type_t k = *((enum action_type_t*)key);
-  enum action_type_t m = ((struct action_info_t*)member)->id;
+  enum action_type_t k = *((enum action_type_t *)key);
+  enum action_type_t m = ((struct action_info_t *)member)->id;
   return k - m;
 }
 
 const char *get_action_name(enum action_type_t action) {
-  struct action_info_t *elem = bsearch(&action,
-				       action_info,
-				       action_info_size,
-				       sizeof(*action_info),
-				       action_info_compare);
+  struct action_info_t *elem =
+      bsearch(&action, action_info, action_info_size, sizeof(*action_info),
+              action_info_compare);
   return elem ? elem->desc : 0;
 }
 
-int get_cmd_desc(char *str, size_t size,
-		     const struct vgm_command_t *cmd) {
+int get_cmd_desc(char *str, size_t size, const struct vgm_command_t *cmd) {
   uint8_t lookup_cmd = reduce_command(cmd->command);
   struct command_info_t *elem =
       bsearch(&lookup_cmd, command_info, command_info_size,
               sizeof(struct command_info_t), command_info_compare);
   if (!elem) return -1;
-  
+
   switch (cmd->cmd_type) {
     case cmd_type_none:
       snprintf(str, size, "%s", elem->short_desc);
@@ -126,8 +123,7 @@ int get_cmd_desc(char *str, size_t size,
       snprintf(str, size, elem->short_desc, (cmd->command & 0x0f));
       return 0;
     case cmd_type_nibble_inc:
-      snprintf(str, size, elem->short_desc,
-               (cmd->command & 0x0f) + 1);
+      snprintf(str, size, elem->short_desc, (cmd->command & 0x0f) + 1);
       return 0;
     case cmd_type_byte:
       snprintf(str, size, elem->short_desc,
@@ -169,6 +165,6 @@ int get_cmd_desc(char *str, size_t size,
       return 0;
     }
   };
-    
+
   return -2;
 }

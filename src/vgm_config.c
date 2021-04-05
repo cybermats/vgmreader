@@ -6,8 +6,7 @@ const struct command_info_t command_info[] = {
     {0x30, cmd_type_byte, action_type_reserved, ""},
     {0x40, cmd_type_byte_byte, action_type_reserved, ""},
 
-    {0x4f, cmd_type_byte, action_type_game_gear_pcm,
-     ":6 <- %#04x"},
+    {0x4f, cmd_type_byte, action_type_game_gear_pcm, ":6 <- %#04x"},
     {0x50, cmd_type_byte, action_type_psg, ": <- %#04x"},
 
     {0x51, cmd_type_byte_byte, action_type_ym2413, "[%#04x] <- %#04x"},
@@ -101,26 +100,86 @@ const struct attr_name_t attribs[] = {
 const size_t attribs_size = sizeof attribs / sizeof *attribs;
 
 const struct action_info_t action_info[] = {
-  {action_type_none,         "None",              },
-  {action_type_wait,	     "Wait",	     	   },
-  {action_type_game_gear_pcm,"Game Gear PCM",     },
-  {action_type_psg,	     "PSG",	     	   },
-  {action_type_ym2413,	     "YM2413",	     	   },
-  {action_type_ym2612,	     "YM2612",	     	   },
-  {action_type_ym2151,	     "YM2151",	     	   },
-  {action_type_ym2203,	     "YM2203",	     	   },
-  {action_type_ym2608,	     "YM2608",	     	   },
-  {action_type_ym2610,	     "YM2610",	     	   },
-  {action_type_ym3812,	     "YM3812",	     	   },
-  {action_type_ym3526,	     "YM3526",	     	   },
-  {action_type_y8950,	     "Y8950",	     	   },
-  {action_type_ymz280b,	     "YMZ280B",	     	   },
-  {action_type_ymf262,	     "YMF262",	     	   },
-  {action_type_reserved,     "Reserved",   },	     
-  {action_type_data_block,   "Data Block",    	   },
-  {action_type_eos,	     "EOS",	     	   },
-  {action_type_sega_pcm,     "SEGA PCM",   },	     
-  {action_type_c352,	     "C352",	     	   },
+    {
+        action_type_none,
+        "None",
+    },
+    {
+        action_type_wait,
+        "Wait",
+    },
+    {
+        action_type_game_gear_pcm,
+        "Game Gear PCM",
+    },
+    {
+        action_type_psg,
+        "PSG",
+    },
+    {
+        action_type_ym2413,
+        "YM2413",
+    },
+    {
+        action_type_ym2612,
+        "YM2612",
+    },
+    {
+        action_type_ym2151,
+        "YM2151",
+    },
+    {
+        action_type_ym2203,
+        "YM2203",
+    },
+    {
+        action_type_ym2608,
+        "YM2608",
+    },
+    {
+        action_type_ym2610,
+        "YM2610",
+    },
+    {
+        action_type_ym3812,
+        "YM3812",
+    },
+    {
+        action_type_ym3526,
+        "YM3526",
+    },
+    {
+        action_type_y8950,
+        "Y8950",
+    },
+    {
+        action_type_ymz280b,
+        "YMZ280B",
+    },
+    {
+        action_type_ymf262,
+        "YMF262",
+    },
+    {
+        action_type_reserved,
+        "Reserved",
+    },
+    {
+        action_type_data_block,
+        "Data Block",
+    },
+    {
+        action_type_eos,
+        "EOS",
+    },
+    {
+        action_type_sega_pcm,
+        "SEGA PCM",
+    },
+    {
+        action_type_c352,
+        "C352",
+    },
 };
 
 const size_t action_info_size = sizeof action_info / sizeof *action_info;

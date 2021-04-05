@@ -109,22 +109,18 @@ struct vgm_command_t {
   size_t size;
 };
 
-struct vgm_t *vgm_create(const unsigned char *buffer,
-			 size_t start_offset,
+struct vgm_t *vgm_create(const unsigned char *buffer, size_t start_offset,
                          size_t buffer_size);
 void vgm_free(struct vgm_t *vgm);
 size_t vgm_get_tags(char *dst, size_t n, const struct vgm_t *vgm);
 
 uint32_t vgm_get_attr(const struct vgm_t *vgm, int attribute);
 
-size_t vgm_next_command(struct vgm_command_t *cmd,
-			const struct vgm_t *vgm,
-			size_t offset);
+size_t vgm_next_command(struct vgm_command_t *cmd, const struct vgm_t *vgm,
+                        size_t offset);
 
-int vgm_process_command(FILE *fp,
-			const struct vgm_command_t *cmd);
-int vgm_cmd_to_string(char *str, size_t size,
-		      const struct vgm_command_t *cmd);
+int vgm_process_command(FILE *fp, const struct vgm_command_t *cmd);
+int vgm_cmd_to_string(char *str, size_t size, const struct vgm_command_t *cmd);
 int vgm_validate_buffer(const uint8_t *buffer, size_t size);
 
 #endif
