@@ -13,7 +13,6 @@ AM_CPPFLAGS = -I${top_srcdir}/src $(CRITERION_CFLAGS)
 ACLOCAL_AMFLAGS = -I m4
 
 SRC_DIR=$(top_srcdir)/src
-VPATH=$(SRC_DIR)
 
 C_SRCFILES = $(SRC_DIR)/vgm.c \
 	$(SRC_DIR)/args.c \
@@ -24,7 +23,6 @@ C_SRCFILES = $(SRC_DIR)/vgm.c \
 HFILES =
 
 CFILES = \
-	main.c \
 	test_core.c \
 	test_header.c \
 	test_decoder.c \
