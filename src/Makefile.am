@@ -7,13 +7,15 @@ HFILES =\
 	vgm.h \
 	args.h \
 	decode.h \
-	vgm_helper.h
+	vgm_helper.h \
+	vgm_config.h
 
 CFILES =\
 	vgm.c \
 	args.c \
 	decode.c \
-	vgm_helper.c
+	vgm_helper.c \
+	vgm_config.c
 
 
 

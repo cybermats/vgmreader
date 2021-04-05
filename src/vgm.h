@@ -59,37 +59,26 @@
 // Version 1.51
 #define VGM_LOOP_MODIFIER 0x7f  // 8 bits
 
-typedef struct {
+struct vgm_t {
   const uint8_t *buffer;
   size_t size;
-} Vgm;
+};
 
-typedef struct {
+struct vgm_command_t {
   uint8_t command;
   const uint8_t *data;
   size_t size;
-} VgmCommand;
+};
 
-typedef enum {
-  unknown = 0,
-  none,
-  game_gear,
-  psg,
-  ym2413,
+struct vgm_t *vgm_create(const unsigned char *buffer, size_t start_offset, size_t buffer_size);
+void vgm_free(struct vgm_t *vgm);
+size_t vgm_get_tags(char *dst, size_t n, const struct vgm_t *vgm);
 
-} VgmCpu;
+uint32_t vgm_get_attr(const struct vgm_t *vgm, int attribute);
 
-Vgm *vgm_create(const unsigned char *buffer, size_t start_offset, size_t buffer_size);
-void vgm_free(Vgm *vgm);
-size_t vgm_get_tags(char *dst, size_t n, const Vgm *vgm);
+size_t vgm_next_command(struct vgm_command_t *cmd, const struct vgm_t *vgm, size_t offset);
 
-uint32_t vgm_get_attr(const Vgm *vgm, int attribute);
-
-size_t vgm_next_command(VgmCommand *cmd, const Vgm *vgm, size_t offset);
-
-VgmCpu vgm_get_command_cpu(const VgmCommand *command);
-
-int vgm_process_command(FILE *fp, VgmCommand *command);
+int vgm_process_command(FILE *fp, struct vgm_command_t *command);
 
 int vgm_validate_buffer(const uint8_t *buffer, size_t size);
 

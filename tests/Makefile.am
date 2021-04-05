@@ -18,7 +18,8 @@ VPATH=$(SRC_DIR)
 C_SRCFILES = $(SRC_DIR)/vgm.c \
 	$(SRC_DIR)/args.c \
 	$(SRC_DIR)/decode.c \
-	$(SRC_DIR)/vgm_helper.c
+	$(SRC_DIR)/vgm_helper.c \
+	$(SRC_DIR)/vgm_config.c
 
 HFILES =
 

@@ -39,7 +39,7 @@ static unsigned char master_buffer[] = {
 
 };
 
-static Vgm *g_vgm = NULL;
+static struct vgm_t *g_vgm = NULL;
 
 void setup(void) {
   g_vgm = vgm_create(master_buffer, 0, sizeof(master_buffer));
@@ -57,7 +57,7 @@ Test(command, test_bad_format, .signal = SIGABRT) {
 Test(command, test_zero_args) {
   cr_assert_not_null(g_vgm);
   size_t offset = 0x40;
-  VgmCommand command;
+  struct vgm_command_t command;
   cr_expect_eq(vgm_next_command(&command, g_vgm, offset), offset + 1);
   cr_expect_eq(command.command, 0x62);
   cr_expect_null(command.data);
@@ -66,7 +66,7 @@ Test(command, test_zero_args) {
 Test(command, test_one_nibble_args) {
   cr_assert_not_null(g_vgm);
   size_t offset = 0x48;
-  VgmCommand command;
+  struct vgm_command_t command;
   cr_expect_eq(vgm_next_command(&command, g_vgm, offset), offset + 1);
   cr_expect_eq(command.command, 0x77);
   cr_expect_null(command.data);
@@ -75,7 +75,7 @@ Test(command, test_one_nibble_args) {
 Test(command, test_one_byte_args) {
   cr_assert_not_null(g_vgm);
   size_t offset = 0x50;
-  VgmCommand command;
+  struct vgm_command_t command;
   cr_expect_eq(vgm_next_command(&command, g_vgm, offset), offset + 2);
   cr_expect_eq(command.command, 0x4f);
   cr_expect_eq(command.data[0], 0xdd);
@@ -84,7 +84,7 @@ Test(command, test_one_byte_args) {
 Test(command, test_two_byte_args) {
   cr_assert_not_null(g_vgm);
   size_t offset = 0x58;
-  VgmCommand command;
+  struct vgm_command_t command;
   cr_expect_eq(vgm_next_command(&command, g_vgm, offset), offset + 3);
   cr_expect_eq(command.command, 0x51);
   cr_expect_eq(command.data[0], 0xaa);
@@ -94,7 +94,7 @@ Test(command, test_two_byte_args) {
 Test(command, test_three_byte_args) {
   cr_assert_not_null(g_vgm);
   size_t offset = 0x60;
-  VgmCommand command;
+  struct vgm_command_t command;
   cr_expect_eq(vgm_next_command(&command, g_vgm, offset), offset + 4);
   cr_expect_eq(command.command, 0xc0);
   cr_expect_eq(command.data[0], 0xbb);
@@ -105,7 +105,7 @@ Test(command, test_three_byte_args) {
 Test(command, test_four_byte_args) {
   cr_assert_not_null(g_vgm);
   size_t offset = 0x68;
-  VgmCommand command;
+  struct vgm_command_t command;
   cr_expect_eq(vgm_next_command(&command, g_vgm, offset), offset + 5);
   cr_expect_eq(command.command, 0xe0);
   cr_expect_eq(command.data[0], 0xaa);
@@ -117,7 +117,7 @@ Test(command, test_four_byte_args) {
 Test(command, test_data_block) {
   cr_assert_not_null(g_vgm);
   size_t offset = 0x70;
-  VgmCommand command;
+  struct vgm_command_t command;
   cr_expect_eq(vgm_next_command(&command, g_vgm, offset), offset + 8);
   cr_expect_eq(command.command, 0x67);
 }

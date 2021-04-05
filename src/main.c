@@ -34,7 +34,7 @@ main (int argc, char *argv[])
       return -1;
     }
 
-  Vgm *vgm = vgm_create (buffer, 0, size);
+  struct vgm_t *vgm = vgm_create (buffer, 0, size);
   if (!vgm)
     {
       fprintf (stderr, "Malformed VGM file.\n");
@@ -60,7 +60,7 @@ main (int argc, char *argv[])
   size_t offset = vgm_get_attr(vgm, VGM_DATA_OFFSET) + 0x34;
   while (offset)
     {
-      VgmCommand cmd;
+      struct vgm_command_t cmd;
       offset = vgm_next_command(&cmd, vgm, offset);
       vgm_process_command(stdout, &cmd);      
     }

@@ -43,14 +43,14 @@ void copy_version(unsigned char *dst, const unsigned char *src,
 }
 
 Test(header, test_create_vgm_null) {
-  Vgm *vgm = vgm_create(NULL, 0, 0);
+  struct vgm_t *vgm = vgm_create(NULL, 0, 0);
   cr_assert_null(vgm);
   vgm_free(vgm);
 }
 
 Test(header, test_create_vgm_too_small) {
   char unsigned buffer[] = {0x56, 0x67, 0x6d, 0x20};
-  Vgm *vgm = vgm_create(buffer, 0, 4);
+  struct vgm_t *vgm = vgm_create(buffer, 0, 4);
   cr_assert_null(vgm);
   vgm_free(vgm);
 }
@@ -60,7 +60,7 @@ Test(header, test_create_vgm_success) {
   unsigned char version[] = {0x78, 0x56, 0x34, 0x12};
   copy_version(buffer, master_buffer, version);
 
-  Vgm *vgm;
+  struct vgm_t *vgm;
   vgm = vgm_create(buffer, 0, sizeof(buffer));
   cr_assert_not_null(vgm);
   cr_expect_eq(vgm_get_attr(vgm, VGM_EOF), 1);
@@ -73,7 +73,7 @@ Test(header, test_create_vgm_v100) {
   unsigned char version[] = {0x00, 0x01, 0x00, 0x00};
   copy_version(buffer, master_buffer, version);
 
-  Vgm *vgm;
+  struct vgm_t *vgm;
   vgm = vgm_create(buffer, 0, sizeof(buffer));
   cr_assert_not_null(vgm);
   cr_expect_eq(vgm_get_attr(vgm, VGM_EOF), 1);
@@ -100,7 +100,7 @@ Test(header, test_create_vgm_v101) {
   unsigned char version[] = {0x01, 0x01, 0x00, 0x00};
   copy_version(buffer, master_buffer, version);
 
-  Vgm *vgm;
+  struct vgm_t *vgm;
   vgm = vgm_create(buffer, 0, sizeof(buffer));
   cr_assert_not_null(vgm);
 
@@ -129,7 +129,7 @@ Test(header, test_create_vgm_v110) {
   unsigned char version[] = {0x10, 0x01, 0x00, 0x00};
   copy_version(buffer, master_buffer, version);
 
-  Vgm *vgm;
+  struct vgm_t *vgm;
   vgm = vgm_create(buffer, 0, sizeof(buffer));
   cr_assert_not_null(vgm);
 
@@ -158,7 +158,7 @@ Test(header, test_create_vgm_v150) {
   unsigned char version[] = {0x50, 0x01, 0x00, 0x00};
   copy_version(buffer, master_buffer, version);
 
-  Vgm *vgm;
+  struct vgm_t *vgm;
   vgm = vgm_create(buffer, 0, sizeof(buffer));
   cr_assert_not_null(vgm);
 
@@ -210,7 +210,7 @@ Test(header, test_create_vgm_v151) {
   unsigned char version[] = {0x51, 0x01, 0x00, 0x00};
   copy_version(buffer, master_buffer, version);
 
-  Vgm *vgm;
+  struct vgm_t *vgm;
   vgm = vgm_create(buffer, 0, sizeof(buffer));
   cr_assert_not_null(vgm);
 
